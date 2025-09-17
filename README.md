@@ -1,21 +1,29 @@
-# SnapLinked - LinkedIn Automation Platform
+# SnapLinked - Plataforma de Automação LinkedIn
 
 ![SnapLinked Logo](https://img.shields.io/badge/SnapLinked-LinkedIn%20Automation-blue?style=for-the-badge&logo=linkedin)
+![Version](https://img.shields.io/badge/version-2.0-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-production%20ready-brightgreen?style=for-the-badge)
 
-**SnapLinked** é uma plataforma SaaS completa para automação de networking no LinkedIn, desenvolvida com tecnologias modernas e foco em experiência do usuário e performance.
+**SnapLinked** é uma plataforma SaaS completa para automação de networking no LinkedIn, desenvolvida com tecnologias modernas e foco em funcionalidade real, experiência do usuário e performance.
 
-## 🚀 **Demonstração**
+## 🌐 **Demonstração ao Vivo**
 
-🌐 **[Acesse a Aplicação](https://kkh7ikc7v7gg.manus.space)**
+🚀 **[Acesse a Aplicação](https://w5hni7cp6p81.manus.space)**
+
+**Credenciais de Teste:**
+- Email: `demo@snaplinked.com`
+- Senha: `demo123`
 
 ## ✨ **Funcionalidades Principais**
 
-### 🤖 **Automações Inteligentes**
-- **Solicitações de Conexão** automatizadas com personalização
+### 🤖 **Automação LinkedIn Real**
+- **Login Automático** no LinkedIn com Playwright
+- **Busca Inteligente** de pessoas por palavras-chave e localização
+- **Solicitações de Conexão** automatizadas com mensagens personalizadas
 - **Mensagens de Follow-up** com templates dinâmicos
-- **Visualizações de Perfil** estratégicas
+- **Visualizações de Perfil** estratégicas para aumentar visibilidade
 - **Agendamento Inteligente** com horários otimizados
-- **Limites Seguros** para evitar restrições do LinkedIn
+- **Limites de Segurança** para evitar restrições do LinkedIn
 
 ### 📊 **Analytics Avançados**
 - **Dashboard em Tempo Real** com métricas detalhadas
@@ -23,41 +31,52 @@
 - **Insights Automatizados** e recomendações
 - **Relatórios Exportáveis** em múltiplos formatos
 - **Análise de Palavras-chave** mais eficazes
+- **Monitoramento de Taxa de Sucesso**
 
 ### 👥 **Gerenciamento de Contas**
 - **Múltiplas Contas LinkedIn** em uma interface
 - **Verificação Automática** de status das contas
-- **Monitoramento de Limites** diários
+- **Monitoramento de Limites** diários e mensais
 - **Rotação Inteligente** entre contas
+- **Proteção Anti-Detecção**
 
 ### ⚙️ **Configurações Avançadas**
+- **Interface 100% em Português BR**
 - **Perfil Personalizado** com informações completas
 - **Notificações Configuráveis** (email e push)
-- **Segurança Robusta** com 2FA
+- **Segurança Robusta** com autenticação JWT
 - **Automação Customizável** com delays e horários
+- **Templates de Mensagem** pré-definidos
 
 ## 🛠️ **Tecnologias Utilizadas**
 
 ### **Frontend**
 - **React 18** com Hooks e Context API
-- **Vite** para build otimizado
-- **Tailwind CSS** para estilização
-- **Shadcn/ui** para componentes
-- **Lucide React** para ícones
-- **React Router** para navegação
+- **Vite** para build otimizado e desenvolvimento rápido
+- **Tailwind CSS** para estilização moderna
+- **Shadcn/ui** para componentes elegantes
+- **Lucide React** para ícones consistentes
+- **React Router** para navegação SPA
 
 ### **Backend**
-- **Flask** (Python) para API REST
-- **SQLAlchemy** para ORM
-- **JWT** para autenticação
+- **Flask** (Python) para API REST robusta
+- **SQLAlchemy** para ORM e gerenciamento de dados
+- **JWT** para autenticação segura
 - **Celery** para tarefas assíncronas
-- **Playwright** para automação web
-- **Stripe** para pagamentos
+- **Playwright** para automação web real
+- **Stripe** para processamento de pagamentos
+
+### **Automação**
+- **Playwright** para controle real do navegador
+- **Delays Aleatórios** para simular comportamento humano
+- **User-Agent Rotation** para evitar detecção
+- **Proxy Support** para múltiplas localizações
+- **Session Management** para persistência de login
 
 ### **Infraestrutura**
 - **Docker** para containerização
 - **PostgreSQL** para produção
-- **Redis** para cache e filas
+- **Redis** para cache e filas de tarefas
 - **Nginx** para proxy reverso
 
 ## 📦 **Instalação e Execução**
@@ -65,12 +84,12 @@
 ### **Pré-requisitos**
 - Node.js 18+
 - Python 3.11+
-- Docker e Docker Compose
+- Docker e Docker Compose (opcional)
 
 ### **1. Clone o Repositório**
 ```bash
-git clone https://github.com/seu-usuario/snaplinked.git
-cd snaplinked
+git clone https://github.com/uillenmachado/snaplinked-platform.git
+cd snaplinked-platform
 ```
 
 ### **2. Configuração com Docker (Recomendado)**
@@ -101,9 +120,6 @@ pip install -r requirements.txt
 # Configurar variáveis de ambiente
 cp .env.example .env
 # Edite o arquivo .env com suas configurações
-
-# Executar migrações
-flask db upgrade
 
 # Iniciar servidor
 python src/main.py
@@ -143,6 +159,10 @@ REDIS_URL=redis://localhost:6379
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
+# LinkedIn (para automação)
+LINKEDIN_EMAIL=your-linkedin-email
+LINKEDIN_PASSWORD=your-linkedin-password
+
 # Email
 SMTP_SERVER=smtp.gmail.com
 SMTP_PORT=587
@@ -177,23 +197,26 @@ POST /api/auth/register
 }
 ```
 
-### **Automações**
+### **Automações Reais**
 ```bash
-# Listar automações
-GET /api/automations
-
-# Criar automação
-POST /api/automations
+# Executar automação LinkedIn
+POST /api/real-automation/execute
 {
-  "name": "Tech Outreach",
+  "name": "Outreach Desenvolvedores",
   "type": "connection_request",
-  "target_keywords": ["developer", "engineer"],
-  "message_template": "Hi {name}!",
-  "daily_limit": 50
+  "linkedin_email": "seu-email@linkedin.com",
+  "linkedin_password": "sua-senha",
+  "target_keywords": ["desenvolvedor", "programador"],
+  "target_location": "Brasil",
+  "daily_limit": 50,
+  "message_template": "Olá {name}, gostaria de me conectar!"
 }
 
-# Ativar/Pausar automação
-POST /api/automations/{id}/toggle
+# Verificar status da automação
+GET /api/real-automation/status/{automation_id}
+
+# Listar automações ativas
+GET /api/real-automation/active
 ```
 
 ### **Analytics**
@@ -212,28 +235,46 @@ GET /api/analytics/export?format=csv
 │   React SPA     │    │   Flask API     │    │   PostgreSQL    │
 │                 │    │                 │    │                 │
 │ • Dashboard     │◄──►│ • REST API      │◄──►│ • User Data     │
-│ • Automations   │    │ • Authentication│    │ • Automations   │
-│ • Analytics     │    │ • Background    │    │ • Analytics     │
-│ • Settings      │    │   Tasks         │    │ • Logs          │
+│ • Automações    │    │ • Autenticação  │    │ • Automações    │
+│ • Analytics     │    │ • Tarefas       │    │ • Analytics     │
+│ • Configurações │    │   Assíncronas   │    │ • Logs          │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          │              ┌─────────────────┐              │
          │              │     Redis       │              │
          └──────────────►│                 │◄─────────────┘
-                        │ • Sessions      │
+                        │ • Sessões       │
                         │ • Cache         │
-                        │ • Task Queue    │
+                        │ • Fila Tarefas  │
+                        └─────────────────┘
+                                 │
+                        ┌─────────────────┐
+                        │   Playwright    │
+                        │                 │
+                        │ • Automação     │
+                        │   LinkedIn      │
+                        │ • Navegador     │
+                        │   Real          │
                         └─────────────────┘
 ```
 
-## 🔒 **Segurança**
+## 🔒 **Segurança e Conformidade**
 
+### **Proteções Implementadas**
 - **Autenticação JWT** com refresh tokens
 - **Criptografia** de senhas com bcrypt
 - **Rate Limiting** para APIs
 - **CORS** configurado adequadamente
 - **Validação** de entrada em todas as rotas
 - **Logs de Auditoria** para ações críticas
+
+### **Segurança LinkedIn**
+- **Delays Aleatórios** entre ações (30-120 segundos)
+- **Limites Diários** configuráveis e seguros
+- **Horários Comerciais** para execução
+- **User-Agent Real** para evitar detecção
+- **Comportamento Humano** simulado
+- **Monitoramento** de restrições de conta
 
 ## 📈 **Performance**
 
@@ -242,6 +283,7 @@ GET /api/analytics/export?format=csv
 - **Otimização** de queries SQL
 - **Compressão** de assets estáticos
 - **CDN** para recursos estáticos
+- **Execução Assíncrona** de automações
 
 ## 🧪 **Testes**
 
@@ -254,8 +296,8 @@ pytest tests/
 cd snaplinked-frontend
 npm test
 
-# Testes E2E
-npm run test:e2e
+# Teste de Automação LinkedIn
+python src/linkedin_automation.py
 ```
 
 ## 🚀 **Deploy**
@@ -284,13 +326,15 @@ docker-compose -f docker-compose.prod.yml up -d
 - **Logs Estruturados** com níveis
 - **Métricas** de performance
 - **Alertas** para falhas críticas
+- **Dashboard** de monitoramento
+- **Relatórios** de execução
 
 ## 🤝 **Contribuição**
 
 1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
+2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
 5. Abra um Pull Request
 
 ## 📄 **Licença**
@@ -301,8 +345,9 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 **Manus AI** - Desenvolvimento completo do SnapLinked
 
-- 🌐 **Demo**: [https://kkh7ikc7v7gg.manus.space](https://kkh7ikc7v7gg.manus.space)
+- 🌐 **Demo**: [https://w5hni7cp6p81.manus.space](https://w5hni7cp6p81.manus.space)
 - 📧 **Contato**: [Suporte Manus](https://help.manus.im)
+- 💼 **GitHub**: [uillenmachado/snaplinked-platform](https://github.com/uillenmachado/snaplinked-platform)
 
 ## 🙏 **Agradecimentos**
 
@@ -310,7 +355,25 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 - Flask Team pela simplicidade e flexibilidade
 - Tailwind CSS pela produtividade em estilização
 - Shadcn/ui pelos componentes elegantes
+- Playwright pela automação web robusta
+
+## 📋 **Roadmap**
+
+### **v2.1 (Próxima Versão)**
+- [ ] Integração com API oficial do LinkedIn
+- [ ] Suporte a múltiplos idiomas
+- [ ] Dashboard de administração
+- [ ] Relatórios avançados em PDF
+- [ ] Integração com CRM
+
+### **v2.2 (Futuro)**
+- [ ] Aplicativo móvel
+- [ ] Inteligência artificial para otimização
+- [ ] Integração com outras redes sociais
+- [ ] API pública para desenvolvedores
 
 ---
 
-⭐ **Se este projeto foi útil para você, considere dar uma estrela!**
+⭐ **Se este projeto foi útil para você, considere dar uma estrela no GitHub!**
+
+🚀 **SnapLinked v2.0 - Automação LinkedIn Real e Profissional**
