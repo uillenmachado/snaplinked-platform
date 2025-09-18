@@ -211,6 +211,14 @@ docker-compose up -d
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
+## 🌐 Demo Online
+
+**Acesse a aplicação funcionando:** [https://3dhkilc8y7yd.manus.space](https://3dhkilc8y7yd.manus.space)
+
+**Credenciais de teste:**
+- Email: demo@snaplinked.com
+- Senha: demo123
+
 ## 📞 Suporte
 
 - **Email**: suporte@snaplinked.com
