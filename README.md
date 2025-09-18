@@ -1,379 +1,229 @@
 # SnapLinked - Plataforma de Automação LinkedIn
 
-![SnapLinked Logo](https://img.shields.io/badge/SnapLinked-LinkedIn%20Automation-blue?style=for-the-badge&logo=linkedin)
-![Version](https://img.shields.io/badge/version-2.0-green?style=for-the-badge)
-![Status](https://img.shields.io/badge/status-production%20ready-brightgreen?style=for-the-badge)
+## 🚀 Versão Final Auditada - v3.0.0
 
-**SnapLinked** é uma plataforma SaaS completa para automação de networking no LinkedIn, desenvolvida com tecnologias modernas e foco em funcionalidade real, experiência do usuário e performance.
+**SnapLinked** é uma plataforma SaaS completa para automação de ações no LinkedIn através de scripts JavaScript executados no console do navegador. A solução combina autenticação OAuth 2.0 oficial do LinkedIn com scripts de automação seguros e eficientes.
 
-## 🌐 **Demonstração ao Vivo**
+## ✨ Funcionalidades Principais
 
-🚀 **[Acesse a Aplicação](https://w5hni7cp6p81.manus.space)**
+### 🔐 Autenticação LinkedIn Real
+- **OAuth 2.0 oficial** do LinkedIn
+- **Scopes limitados**: `openid`, `profile`, `email` (apenas dados básicos)
+- **Conexão segura** com contas LinkedIn reais
+- **Proteção CSRF** com state validation
 
-**Credenciais de Teste:**
-- Email: `demo@snaplinked.com`
-- Senha: `demo123`
+### 🤖 Sistema de Automação via Scripts
+- **Scripts JavaScript** para execução no console (F12)
+- **Automação de conexões** com mensagens personalizadas
+- **Visualização de perfis** estratégica
+- **Envio de mensagens** para conexões existentes
+- **Delays aleatórios** para simular comportamento humano
+- **Limites de segurança** configuráveis
 
-## ✨ **Funcionalidades Principais**
+### 📊 Interface Completa
+- **Dashboard interativo** com estatísticas em tempo real
+- **Gerenciamento de automações** configuráveis
+- **Analytics avançados** com gráficos e insights
+- **Página de scripts** com códigos prontos para uso
+- **Sistema de planos** e assinaturas
+- **Interface 100% em português brasileiro**
 
-### 🤖 **Automação LinkedIn Real**
-- **Login Automático** no LinkedIn com Playwright
-- **Busca Inteligente** de pessoas por palavras-chave e localização
-- **Solicitações de Conexão** automatizadas com mensagens personalizadas
-- **Mensagens de Follow-up** com templates dinâmicos
-- **Visualizações de Perfil** estratégicas para aumentar visibilidade
-- **Agendamento Inteligente** com horários otimizados
-- **Limites de Segurança** para evitar restrições do LinkedIn
+## 🏗️ Arquitetura Técnica
 
-### 📊 **Analytics Avançados**
-- **Dashboard em Tempo Real** com métricas detalhadas
-- **Gráficos Interativos** de performance
-- **Insights Automatizados** e recomendações
-- **Relatórios Exportáveis** em múltiplos formatos
-- **Análise de Palavras-chave** mais eficazes
-- **Monitoramento de Taxa de Sucesso**
+### Frontend (React + Vite)
+```
+src/
+├── components/
+│   ├── layout/DashboardLayout.jsx
+│   └── ui/                     # Componentes reutilizáveis
+├── pages/
+│   ├── DashboardPage.jsx       # Dashboard principal
+│   ├── AutomationsPage.jsx     # Gerenciamento de automações
+│   ├── LinkedInAccountsPage.jsx # Conexão OAuth LinkedIn
+│   ├── AnalyticsPage.jsx       # Estatísticas e gráficos
+│   ├── ScriptsPage.jsx         # Scripts de automação
+│   └── SettingsPage.jsx        # Configurações
+├── scripts/
+│   └── linkedin-automation.js  # Scripts de automação
+└── services/
+    └── api.js                  # Cliente API
+```
 
-### 👥 **Gerenciamento de Contas**
-- **Múltiplas Contas LinkedIn** em uma interface
-- **Verificação Automática** de status das contas
-- **Monitoramento de Limites** diários e mensais
-- **Rotação Inteligente** entre contas
-- **Proteção Anti-Detecção**
+### Backend (Flask)
+```
+src/
+└── main.py                     # Aplicação Flask completa
+```
 
-### ⚙️ **Configurações Avançadas**
-- **Interface 100% em Português BR**
-- **Perfil Personalizado** com informações completas
-- **Notificações Configuráveis** (email e push)
-- **Segurança Robusta** com autenticação JWT
-- **Automação Customizável** com delays e horários
-- **Templates de Mensagem** pré-definidos
+**Endpoints Principais:**
+- `GET /api/health` - Health check
+- `POST /api/auth/login` - Login demo
+- `GET /api/auth/linkedin/connect` - Iniciar OAuth LinkedIn
+- `GET /api/auth/linkedin/callback` - Callback OAuth
+- `GET /api/linkedin/profile` - Dados do perfil conectado
+- `GET /api/automations` - Lista de automações
+- `GET /api/analytics` - Estatísticas de uso
+- `GET /scripts/linkedin-automation.js` - Script de automação
 
-## 🛠️ **Tecnologias Utilizadas**
+## 🛠️ Como Usar
 
-### **Frontend**
-- **React 18** com Hooks e Context API
-- **Vite** para build otimizado e desenvolvimento rápido
-- **Tailwind CSS** para estilização moderna
-- **Shadcn/ui** para componentes elegantes
-- **Lucide React** para ícones consistentes
-- **React Router** para navegação SPA
+### 1. Acesso à Plataforma
+1. Acesse: **https://19hninc0ejo1.manus.space**
+2. Faça login com: `demo@snaplinked.com` / `demo123`
 
-### **Backend**
-- **Flask** (Python) para API REST robusta
-- **SQLAlchemy** para ORM e gerenciamento de dados
-- **JWT** para autenticação segura
-- **Celery** para tarefas assíncronas
-- **Playwright** para automação web real
-- **Stripe** para processamento de pagamentos
+### 2. Conectar LinkedIn
+1. Vá para **"Contas LinkedIn"** no menu
+2. Clique em **"Conectar LinkedIn"**
+3. Autorize o SnapLinked no LinkedIn oficial
+4. Sua conta será conectada com dados reais
 
-### **Automação**
-- **Playwright** para controle real do navegador
-- **Delays Aleatórios** para simular comportamento humano
-- **User-Agent Rotation** para evitar detecção
-- **Proxy Support** para múltiplas localizações
-- **Session Management** para persistência de login
+### 3. Executar Automações
+1. Vá para **"Scripts"** no menu
+2. Copie o script desejado
+3. Abra o LinkedIn em nova aba
+4. Pressione **F12** para abrir o console
+5. Cole e execute o script
+6. Monitore a execução através dos logs
 
-### **Infraestrutura**
-- **Docker** para containerização
-- **PostgreSQL** para produção
-- **Redis** para cache e filas de tarefas
-- **Nginx** para proxy reverso
+### 4. Comandos de Automação
 
-## 📦 **Instalação e Execução**
+**Conectar por palavra-chave:**
+```javascript
+conectarPorPalavraChave("desenvolvedor", 25, "Olá! Gostaria de me conectar.");
+```
 
-### **Pré-requisitos**
+**Visualizar perfis:**
+```javascript
+visualizarPerfis("CEO startup", 50);
+```
+
+**Parar automação:**
+```javascript
+pararAutomacao();
+```
+
+**Ver estatísticas:**
+```javascript
+estatisticas();
+```
+
+## 🔒 Segurança e Boas Práticas
+
+### Proteções Implementadas
+- **Rate limiting** automático
+- **Delays aleatórios** entre ações (2-5 segundos)
+- **Limites diários** configuráveis
+- **Detecção de erros** com parada automática
+- **Simulação de comportamento humano**
+
+### Limites Recomendados
+- **Conexões**: Máximo 50 por dia
+- **Mensagens**: Máximo 25 por dia
+- **Visualizações**: Máximo 100 por dia
+- **Intervalo**: 2-5 segundos entre ações
+
+## 📦 Instalação Local
+
+### Pré-requisitos
 - Node.js 18+
 - Python 3.11+
-- Docker e Docker Compose (opcional)
+- Git
 
-### **1. Clone o Repositório**
+### Frontend
 ```bash
-git clone https://github.com/uillenmachado/snaplinked-platform.git
-cd snaplinked-platform
+cd snaplinked-frontend
+npm install
+npm run dev
 ```
 
-### **2. Configuração com Docker (Recomendado)**
-```bash
-# Inicie todos os serviços
-docker-compose up -d
-
-# A aplicação estará disponível em:
-# Frontend: http://localhost:3000
-# Backend: http://localhost:5000
-```
-
-### **3. Configuração Manual**
-
-#### **Backend**
+### Backend
 ```bash
 cd snaplinked-backend
-
-# Criar ambiente virtual
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# ou
-venv\Scripts\activate     # Windows
-
-# Instalar dependências
 pip install -r requirements.txt
-
-# Configurar variáveis de ambiente
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
-
-# Iniciar servidor
 python src/main.py
 ```
 
-#### **Frontend**
+## 🌐 Deploy em Produção
+
+### Variáveis de Ambiente
 ```bash
-cd snaplinked-frontend
-
-# Instalar dependências
-npm install
-
-# Iniciar servidor de desenvolvimento
-npm run dev
-
-# Build para produção
-npm run build
+SECRET_KEY=your-secret-key
+LINKEDIN_CLIENT_ID=77jmwin70p0gqe
+LINKEDIN_CLIENT_SECRET=your-client-secret
+LINKEDIN_REDIRECT_URI=https://yourdomain.com/api/auth/linkedin/callback
 ```
 
-## 🔧 **Configuração**
-
-### **Variáveis de Ambiente**
-
-#### **Backend (.env)**
-```env
-# Database
-DATABASE_URL=postgresql://user:password@localhost/snaplinked
-
-# JWT
-SECRET_KEY=your-secret-key-here
-JWT_SECRET_KEY=your-jwt-secret-here
-
-# Redis
-REDIS_URL=redis://localhost:6379
-
-# Stripe
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-
-# LinkedIn (para automação)
-LINKEDIN_EMAIL=your-linkedin-email
-LINKEDIN_PASSWORD=your-linkedin-password
-
-# Email
-SMTP_SERVER=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USERNAME=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
-```
-
-#### **Frontend (.env)**
-```env
-VITE_API_URL=http://localhost:5000/api
-VITE_STRIPE_PUBLIC_KEY=pk_test_...
-```
-
-## 📚 **Documentação da API**
-
-### **Autenticação**
+### Docker (Opcional)
 ```bash
-# Login
-POST /api/auth/login
-{
-  "email": "user@example.com",
-  "password": "password"
-}
-
-# Registro
-POST /api/auth/register
-{
-  "email": "user@example.com",
-  "password": "password",
-  "first_name": "João",
-  "last_name": "Silva"
-}
+docker-compose up -d
 ```
 
-### **Automações Reais**
-```bash
-# Executar automação LinkedIn
-POST /api/real-automation/execute
-{
-  "name": "Outreach Desenvolvedores",
-  "type": "connection_request",
-  "linkedin_email": "seu-email@linkedin.com",
-  "linkedin_password": "sua-senha",
-  "target_keywords": ["desenvolvedor", "programador"],
-  "target_location": "Brasil",
-  "daily_limit": 50,
-  "message_template": "Olá {name}, gostaria de me conectar!"
-}
+## 📊 Planos de Assinatura
 
-# Verificar status da automação
-GET /api/real-automation/status/{automation_id}
+### Starter - R$ 29/mês
+- 5 scripts de automação
+- 100 conexões/dia
+- 50 mensagens/dia
+- Suporte por email
 
-# Listar automações ativas
-GET /api/real-automation/active
-```
+### Professional - R$ 79/mês ⭐
+- 20 scripts de automação
+- 300 conexões/dia
+- 150 mensagens/dia
+- Scripts personalizados
+- Suporte prioritário
 
-### **Analytics**
-```bash
-# Obter analytics
-GET /api/analytics?range=7d
+### Enterprise - R$ 199/mês
+- Scripts ilimitados
+- 1000 conexões/dia
+- 500 mensagens/dia
+- Scripts customizados
+- Suporte dedicado
+- Treinamento personalizado
 
-# Exportar dados
-GET /api/analytics/export?format=csv
-```
-
-## 🏗️ **Arquitetura**
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   React SPA     │    │   Flask API     │    │   PostgreSQL    │
-│                 │    │                 │    │                 │
-│ • Dashboard     │◄──►│ • REST API      │◄──►│ • User Data     │
-│ • Automações    │    │ • Autenticação  │    │ • Automações    │
-│ • Analytics     │    │ • Tarefas       │    │ • Analytics     │
-│ • Configurações │    │   Assíncronas   │    │ • Logs          │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         │              ┌─────────────────┐              │
-         │              │     Redis       │              │
-         └──────────────►│                 │◄─────────────┘
-                        │ • Sessões       │
-                        │ • Cache         │
-                        │ • Fila Tarefas  │
-                        └─────────────────┘
-                                 │
-                        ┌─────────────────┐
-                        │   Playwright    │
-                        │                 │
-                        │ • Automação     │
-                        │   LinkedIn      │
-                        │ • Navegador     │
-                        │   Real          │
-                        └─────────────────┘
-```
-
-## 🔒 **Segurança e Conformidade**
-
-### **Proteções Implementadas**
-- **Autenticação JWT** com refresh tokens
-- **Criptografia** de senhas com bcrypt
-- **Rate Limiting** para APIs
-- **CORS** configurado adequadamente
-- **Validação** de entrada em todas as rotas
-- **Logs de Auditoria** para ações críticas
-
-### **Segurança LinkedIn**
-- **Delays Aleatórios** entre ações (30-120 segundos)
-- **Limites Diários** configuráveis e seguros
-- **Horários Comerciais** para execução
-- **User-Agent Real** para evitar detecção
-- **Comportamento Humano** simulado
-- **Monitoramento** de restrições de conta
-
-## 📈 **Performance**
-
-- **Lazy Loading** de componentes React
-- **Caching** inteligente com Redis
-- **Otimização** de queries SQL
-- **Compressão** de assets estáticos
-- **CDN** para recursos estáticos
-- **Execução Assíncrona** de automações
-
-## 🧪 **Testes**
-
-```bash
-# Testes do Backend
-cd snaplinked-backend
-pytest tests/
-
-# Testes do Frontend
-cd snaplinked-frontend
-npm test
-
-# Teste de Automação LinkedIn
-python src/linkedin_automation.py
-```
-
-## 🚀 **Deploy**
-
-### **Produção com Docker**
-```bash
-# Build das imagens
-docker-compose -f docker-compose.prod.yml build
-
-# Deploy
-docker-compose -f docker-compose.prod.yml up -d
-```
-
-### **Deploy Manual**
-1. Configure um servidor com Python 3.11+ e Node.js 18+
-2. Configure PostgreSQL e Redis
-3. Clone o repositório
-4. Configure as variáveis de ambiente
-5. Execute o build do frontend
-6. Inicie o backend com Gunicorn
-7. Configure Nginx como proxy reverso
-
-## 📊 **Monitoramento**
-
-- **Health Checks** automáticos
-- **Logs Estruturados** com níveis
-- **Métricas** de performance
-- **Alertas** para falhas críticas
-- **Dashboard** de monitoramento
-- **Relatórios** de execução
-
-## 🤝 **Contribuição**
+## 🤝 Contribuição
 
 1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
-3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
+2. Crie uma branch para sua feature
+3. Commit suas mudanças
+4. Push para a branch
 5. Abra um Pull Request
 
-## 📄 **Licença**
+## 📄 Licença
 
-Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## 👨‍💻 **Autor**
+## 🆘 Suporte
 
-**Manus AI** - Desenvolvimento completo do SnapLinked
+- **Email**: suporte@snaplinked.com
+- **Documentação**: https://docs.snaplinked.com
+- **Issues**: https://github.com/uillenmachado/snaplinked-platform/issues
 
-- 🌐 **Demo**: [https://w5hni7cp6p81.manus.space](https://w5hni7cp6p81.manus.space)
-- 📧 **Contato**: [Suporte Manus](https://help.manus.im)
-- 💼 **GitHub**: [uillenmachado/snaplinked-platform](https://github.com/uillenmachado/snaplinked-platform)
+## 🔄 Changelog
 
-## 🙏 **Agradecimentos**
+### v3.0.0 - Versão Final Auditada
+- ✅ Sistema de scripts JavaScript para automação
+- ✅ OAuth 2.0 real do LinkedIn (apenas dados básicos)
+- ✅ Interface 100% em português brasileiro
+- ✅ Layout responsivo e profissional
+- ✅ Página de scripts com códigos prontos
+- ✅ Backend simplificado e otimizado
+- ✅ Remoção de arquivos desnecessários
+- ✅ Documentação completa
 
-- React Team pelo framework incrível
-- Flask Team pela simplicidade e flexibilidade
-- Tailwind CSS pela produtividade em estilização
-- Shadcn/ui pelos componentes elegantes
-- Playwright pela automação web robusta
+### v2.0.0 - Integração LinkedIn Real
+- ✅ OAuth 2.0 do LinkedIn implementado
+- ✅ Conexão com contas reais
+- ✅ Interface traduzida para português
+- ✅ Layout corrigido e alinhado
 
-## 📋 **Roadmap**
-
-### **v2.1 (Próxima Versão)**
-- [ ] Integração com API oficial do LinkedIn
-- [ ] Suporte a múltiplos idiomas
-- [ ] Dashboard de administração
-- [ ] Relatórios avançados em PDF
-- [ ] Integração com CRM
-
-### **v2.2 (Futuro)**
-- [ ] Aplicativo móvel
-- [ ] Inteligência artificial para otimização
-- [ ] Integração com outras redes sociais
-- [ ] API pública para desenvolvedores
+### v1.0.0 - Versão Beta
+- ✅ Interface básica funcional
+- ✅ Sistema de automação simulado
+- ✅ Dashboard e páginas principais
 
 ---
 
-⭐ **Se este projeto foi útil para você, considere dar uma estrela no GitHub!**
+**Desenvolvido com ❤️ pela equipe SnapLinked**
 
-🚀 **SnapLinked v2.0 - Automação LinkedIn Real e Profissional**
+*Automatize seu LinkedIn de forma inteligente e segura!*
