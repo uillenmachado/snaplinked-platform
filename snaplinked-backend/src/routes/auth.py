@@ -11,7 +11,7 @@ import base64
 import hashlib
 import time
 
-from ..config.settings import Config
+from config.settings import Config
 
 logger = logging.getLogger(__name__)
 

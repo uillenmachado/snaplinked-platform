@@ -3,6 +3,11 @@ Testes unitários para utilitários de validação
 """
 
 import pytest
+import sys
+import os
+
+# Adicionar src ao path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
 from utils.validators import (
     validate_email,
     validate_password,

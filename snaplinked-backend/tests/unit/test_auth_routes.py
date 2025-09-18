@@ -3,6 +3,11 @@ Testes unitários para rotas de autenticação
 """
 
 import pytest
+import sys
+import os
+
+# Adicionar src ao path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
 import json
 from unittest.mock import patch, Mock
 

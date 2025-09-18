@@ -9,7 +9,7 @@ import os
 import logging
 from datetime import datetime
 
-from config import config
+from config.settings import Config
 from routes import auth_bp, linkedin_bp, automations_bp, analytics_bp
 
 # Configure logging
@@ -30,10 +30,14 @@ def create_app(config_name=None):
     app = Flask(__name__, static_folder='static', static_url_path='')
     
     # Carregar configuração
-    app.config.from_object(config[config_name])
+    config_obj = Config()
+    app.config.from_object(config_obj)
     
     # Configurar CORS
-    CORS(app, origins=app.config['CORS_ORIGINS'])
+    cors_origins = app.config.get('CORS_ORIGINS', ['http://localhost:3000', 'http://localhost:5173'])
+    if isinstance(cors_origins, str):
+        cors_origins = cors_origins.split(',')
+    CORS(app, origins=cors_origins)
     
     # Registrar blueprints
     app.register_blueprint(auth_bp)

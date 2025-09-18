@@ -7,7 +7,7 @@ from datetime import datetime
 import logging
 import asyncio
 
-from ..services.linkedin_automation import automation_engine
+from services.linkedin_automation import automation_engine
 
 logger = logging.getLogger(__name__)
 

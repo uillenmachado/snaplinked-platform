@@ -11,13 +11,14 @@ import os
 # Adicionar src ao path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from main import create_app
+# Importar módulos do projeto
+import main
 from services.linkedin_automation import LinkedInAutomationEngine
 
 @pytest.fixture
 def app():
     """Fixture da aplicação Flask para testes"""
-    app = create_app('testing')
+    app = main.create_app('testing')
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
     return app
