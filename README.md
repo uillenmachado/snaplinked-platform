@@ -2,7 +2,7 @@
 
 **Automatize seu networking no LinkedIn com inteligência artificial**
 
-[![Versão](https://img.shields.io/badge/versão-4.0.0-blue.svg)](https://github.com/uillenmachado/snaplinked-platform)
+[![Versão](https://img.shields.io/badge/versão-4.1.0-blue.svg)](https://github.com/uillenmachado/snaplinked-platform)
 [![Status](https://img.shields.io/badge/status-ativo-green.svg)](https://github.com/uillenmachado/snaplinked-platform)
 [![Licença](https://img.shields.io/badge/licença-MIT-yellow.svg)](LICENSE)
 
@@ -18,6 +18,9 @@ O **SnapLinked** é uma plataforma SaaS completa para automação de networking 
 - 📊 **Analytics Avançados**: Relatórios detalhados de performance
 - 🔒 **Segurança Garantida**: Comportamento humano simulado para proteção da conta
 - 🌐 **Interface Moderna**: Design responsivo e intuitivo 100% em português
+- 🏗️ **Arquitetura Modular**: Backend refatorado com separação de responsabilidades
+- ✅ **Testes Automatizados**: Cobertura completa com testes unitários e de integração
+- 🛡️ **Segurança Aprimorada**: Validação robusta, rate limiting e proteção CSRF
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -29,9 +32,12 @@ O **SnapLinked** é uma plataforma SaaS completa para automação de networking 
 - **Shadcn/ui** - Componentes UI profissionais
 
 ### Backend
-- **Flask** - Framework web Python
+- **Flask 2.3.3** - Framework web Python
 - **Flask-CORS** - Suporte a CORS
-- **Playwright** - Automação de navegador
+- **Playwright 1.40.0** - Automação de navegador
+- **PyJWT 2.8.0** - Autenticação JWT segura
+- **Werkzeug 2.3.7** - Utilitários web seguros
+- **Pytest 7.4.3** - Framework de testes
 - **LinkedIn OAuth 2.0** - Autenticação oficial
 - **SQLite** - Banco de dados local
 
