@@ -23,14 +23,19 @@ export function AuthProvider({ children }) {
       ...options,
     }
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, config)
-    const data = await response.json()
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, config)
+      const data = await response.json()
 
-    if (!response.ok) {
-      throw new Error(data.message || 'Something went wrong')
+      if (!response.ok) {
+        throw new Error(data.message || data.error || 'Algo deu errado')
+      }
+
+      return data
+    } catch (error) {
+      console.error('API Call Error:', error)
+      throw error
     }
-
-    return data
   }
 
   // Load user from token on app start
@@ -71,26 +76,28 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ email, password }),
       })
 
-      if (response.success) {
-        const { user, tokens } = response
+      if (response && response.success) {
+        const { user, token } = response
         
-        // Store tokens
-        localStorage.setItem('access_token', tokens.access_token)
-        localStorage.setItem('refresh_token', tokens.refresh_token)
+        // Store token
+        localStorage.setItem('access_token', token)
         
         setUser(user)
         
         toast({
-          title: 'Login successful',
-          description: `Welcome back, ${user.first_name}!`,
+          title: 'Login realizado com sucesso',
+          description: `Bem-vindo de volta, ${user.name}!`,
         })
         
         return { success: true }
+      } else {
+        throw new Error('Credenciais inválidas')
       }
     } catch (error) {
+      console.error('Login error:', error)
       toast({
-        title: 'Login failed',
-        description: error.message,
+        title: 'Falha no login',
+        description: error.message || 'Erro ao fazer login',
         variant: 'destructive',
       })
       return { success: false, error: error.message }
@@ -118,15 +125,15 @@ export function AuthProvider({ children }) {
         setUser(user)
         
         toast({
-          title: 'Registration successful',
-          description: `Welcome to SnapLinked, ${user.first_name}!`,
+          title: 'Registro realizado com sucesso',
+          description: `Bem-vindo ao SnapLinked, ${user.name}!`,
         })
         
         return { success: true }
       }
     } catch (error) {
       toast({
-        title: 'Registration failed',
+        title: 'Falha no registro',
         description: error.message,
         variant: 'destructive',
       })
@@ -148,8 +155,8 @@ export function AuthProvider({ children }) {
       setUser(null)
       
       toast({
-        title: 'Logged out',
-        description: 'You have been successfully logged out.',
+        title: 'Logout realizado',
+        description: 'Você foi desconectado com sucesso.',
       })
     }
   }
@@ -165,15 +172,15 @@ export function AuthProvider({ children }) {
         setUser(response.user)
         
         toast({
-          title: 'Profile updated',
-          description: 'Your profile has been updated successfully.',
+          title: 'Perfil atualizado',
+          description: 'Seu perfil foi atualizado com sucesso.',
         })
         
         return { success: true }
       }
     } catch (error) {
       toast({
-        title: 'Update failed',
+        title: 'Falha na atualização',
         description: error.message,
         variant: 'destructive',
       })
@@ -193,15 +200,15 @@ export function AuthProvider({ children }) {
 
       if (response.success) {
         toast({
-          title: 'Password changed',
-          description: 'Your password has been changed successfully.',
+          title: 'Senha alterada',
+          description: 'Sua senha foi alterada com sucesso.',
         })
         
         return { success: true }
       }
     } catch (error) {
       toast({
-        title: 'Password change failed',
+        title: 'Falha na alteração da senha',
         description: error.message,
         variant: 'destructive',
       })

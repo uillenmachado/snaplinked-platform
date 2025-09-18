@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SnapLinked</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; }
+        .header { background: white; border-bottom: 1px solid #e2e8f0; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #3b82f6; }
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 2rem; }
+        .card { background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .card h2 { margin-bottom: 1rem; color: #1e293b; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 8px; }
+        .stat-number { font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem; }
+        .stat-label { opacity: 0.9; }
+        .btn { background: #3b82f6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; }
+        .btn:hover { background: #2563eb; }
+        .btn-secondary { background: #6b7280; }
+        .btn-secondary:hover { background: #4b5563; }
+        .automation-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; }
+        .control-group { border: 1px solid #e2e8f0; border-radius: 6px; padding: 1rem; }
+        .control-group h3 { margin-bottom: 0.5rem; color: #374151; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.25rem; color: #374151; font-weight: 500; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; }
+        .status { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: 500; }
+        .status.active { background: #dcfce7; color: #166534; }
+        .status.inactive { background: #fef2f2; color: #991b1b; }
+        .log { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; padding: 1rem; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">SnapLinked</div>
+        <div class="user-info">
+            <span id="userName">Demo User</span>
+            <button class="btn btn-secondary" onclick="logout()">Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Estatísticas -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="connectionsCount">1,247</div>
+                <div class="stat-label">Conexões Enviadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="acceptanceRate">73%</div>
+                <div class="stat-label">Taxa de Aceitação</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="messagesCount">892</div>
+                <div class="stat-label">Mensagens Enviadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="responseRate">41%</div>
+                <div class="stat-label">Taxa de Resposta</div>
+            </div>
+        </div>
+
+        <!-- Controles de Automação -->
+        <div class="card">
+            <h2>Controles de Automação</h2>
+            <div class="automation-controls">
+                <!-- Conexões Automáticas -->
+                <div class="control-group">
+                    <h3>Conexões Automáticas</h3>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <span class="status active" id="connectionStatus">Ativo</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Palavras-chave de busca:</label>
+                        <input type="text" id="searchKeywords" placeholder="ex: desenvolvedor, marketing, vendas" value="desenvolvedor frontend">
+                    </div>
+                    <div class="form-group">
+                        <label>Conexões por dia:</label>
+                        <input type="number" id="connectionsPerDay" min="1" max="50" value="20">
+                    </div>
+                    <div class="form-group">
+                        <label>Mensagem personalizada:</label>
+                        <textarea id="connectionMessage" rows="3" placeholder="Olá {nome}, gostaria de me conectar...">Olá {nome}, vi seu perfil e gostaria de expandir minha rede com profissionais da área. Aceita se conectar?</textarea>
+                    </div>
+                    <button class="btn" onclick="toggleAutomation('connections')">Pausar Automação</button>
+                </div>
+
+                <!-- Mensagens de Follow-up -->
+                <div class="control-group">
+                    <h3>Mensagens de Follow-up</h3>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <span class="status inactive" id="followupStatus">Inativo</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Delay após conexão (dias):</label>
+                        <input type="number" id="followupDelay" min="1" max="30" value="3">
+                    </div>
+                    <div class="form-group">
+                        <label>Mensagem de follow-up:</label>
+                        <textarea id="followupMessage" rows="3" placeholder="Obrigado por aceitar minha conexão...">Obrigado por aceitar minha conexão, {nome}! Seria interessante conversarmos sobre oportunidades de colaboração.</textarea>
+                    </div>
+                    <button class="btn" onclick="toggleAutomation('followup')">Iniciar Automação</button>
+                </div>
+
+                <!-- Visualização de Perfis -->
+                <div class="control-group">
+                    <h3>Visualização de Perfis</h3>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <span class="status active" id="viewingStatus">Ativo</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Visualizações por dia:</label>
+                        <input type="number" id="viewsPerDay" min="1" max="100" value="50">
+                    </div>
+                    <div class="form-group">
+                        <label>Filtros de perfil:</label>
+                        <select id="profileFilters">
+                            <option value="all">Todos os perfis</option>
+                            <option value="connections">Apenas conexões</option>
+                            <option value="2nd">Conexões de 2º grau</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="toggleAutomation('viewing')">Pausar Automação</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conexão com LinkedIn -->
+        <div class="card">
+            <h2>Conexão com LinkedIn</h2>
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                <span class="status inactive" id="linkedinStatus">Desconectado</span>
+                <button class="btn" onclick="connectLinkedIn()">Conectar com LinkedIn</button>
+                <button class="btn btn-secondary" onclick="loginManually()">Login Manual</button>
+            </div>
+            <p style="color: #6b7280; font-size: 0.9rem;">
+                Conecte sua conta LinkedIn para começar a usar as automações. 
+                Você pode usar OAuth ou fazer login manualmente para maior flexibilidade.
+            </p>
+        </div>
+
+        <!-- Log de Atividades -->
+        <div class="card">
+            <h2>Log de Atividades</h2>
+            <div class="log" id="activityLog">
+                <div>2025-09-18 20:30:15 - Sistema iniciado</div>
+                <div>2025-09-18 20:30:16 - Carregando configurações de automação</div>
+                <div>2025-09-18 20:30:17 - Aguardando conexão com LinkedIn</div>
+            </div>
+            <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="clearLog()">Limpar Log</button>
+        </div>
+    </div>
+
+    <script>
+        // Verificar se o usuário está logado
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '/login';
+        }
+
+        // Funções de controle
+        function toggleAutomation(type) {
+            const statusElement = document.getElementById(type + 'Status');
+            const button = event.target;
+            
+            if (statusElement.classList.contains('active')) {
+                statusElement.classList.remove('active');
+                statusElement.classList.add('inactive');
+                statusElement.textContent = 'Inativo';
+                button.textContent = 'Iniciar Automação';
+                addLog(`Automação de ${type} pausada`);
+            } else {
+                statusElement.classList.remove('inactive');
+                statusElement.classList.add('active');
+                statusElement.textContent = 'Ativo';
+                button.textContent = 'Pausar Automação';
+                addLog(`Automação de ${type} iniciada`);
+            }
+        }
+
+        function connectLinkedIn() {
+            addLog('Iniciando conexão OAuth com LinkedIn...');
+            // Simular conexão
+            setTimeout(() => {
+                const status = document.getElementById('linkedinStatus');
+                status.classList.remove('inactive');
+                status.classList.add('active');
+                status.textContent = 'Conectado';
+                addLog('Conectado com LinkedIn via OAuth');
+            }, 2000);
+        }
+
+        function loginManually() {
+            addLog('Abrindo janela para login manual no LinkedIn...');
+            window.open('https://linkedin.com', '_blank');
+            // Simular login manual
+            setTimeout(() => {
+                const status = document.getElementById('linkedinStatus');
+                status.classList.remove('inactive');
+                status.classList.add('active');
+                status.textContent = 'Conectado (Manual)';
+                addLog('Login manual no LinkedIn realizado');
+            }, 5000);
+        }
+
+        function logout() {
+            localStorage.removeItem('access_token');
+            window.location.href = '/login';
+        }
+
+        function addLog(message) {
+            const log = document.getElementById('activityLog');
+            const timestamp = new Date().toLocaleString('pt-BR');
+            const logEntry = document.createElement('div');
+            logEntry.textContent = `${timestamp} - ${message}`;
+            log.appendChild(logEntry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('activityLog').innerHTML = '';
+            addLog('Log limpo');
+        }
+
+        // Simular atualizações de estatísticas
+        setInterval(() => {
+            const connections = document.getElementById('connectionsCount');
+            const current = parseInt(connections.textContent.replace(',', ''));
+            connections.textContent = (current + Math.floor(Math.random() * 3)).toLocaleString();
+        }, 30000);
+
+        // Adicionar log inicial
+        addLog('Dashboard carregado com sucesso');
+    </script>
+</body>
+</html>

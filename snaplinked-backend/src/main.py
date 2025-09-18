@@ -148,6 +148,17 @@ def create_app(config_name=None):
         """Connect LinkedIn account"""
         return jsonify({'message': 'Conta LinkedIn conectada'}), 200
     
+    # Rota específica para arquivos HTML de teste
+    @app.route('/dashboard-test.html')
+    def serve_dashboard_test():
+        """Serve dashboard test page"""
+        return send_from_directory(app.static_folder, 'dashboard-test.html')
+    
+    @app.route('/test-login.html')
+    def serve_test_login():
+        """Serve login test page"""
+        return send_from_directory(app.static_folder, 'test-login.html')
+
     # Rotas para servir o frontend
     @app.route('/')
     def serve_frontend():
@@ -157,10 +168,19 @@ def create_app(config_name=None):
     @app.route('/<path:path>')
     def serve_static_files(path):
         """Serve static files or fallback to index.html for SPA routing"""
-        try:
+        # Arquivos específicos que devem ser servidos diretamente
+        if path in ['dashboard-test.html', 'test-login.html']:
             return send_from_directory(app.static_folder, path)
-        except:
-            return send_from_directory(app.static_folder, 'index.html')
+        
+        # Arquivos estáticos (CSS, JS, imagens)
+        if '.' in path and not path.endswith('.html'):
+            try:
+                return send_from_directory(app.static_folder, path)
+            except:
+                pass
+        
+        # Para rotas SPA (sem extensão ou .html), serve o index.html
+        return send_from_directory(app.static_folder, 'index.html')
     
     # Error handlers
     @app.errorhandler(404)
