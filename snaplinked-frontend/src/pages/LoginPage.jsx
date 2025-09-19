@@ -43,7 +43,7 @@ export default function LoginPage() {
       } else {
         setError(result.error || 'Falha no login')
       }
-    } catch (err) {
+    } catch {
       setError('Ocorreu um erro inesperado')
     } finally {
       setIsLoading(false)

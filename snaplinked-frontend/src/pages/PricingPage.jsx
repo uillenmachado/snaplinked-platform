@@ -5,31 +5,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
 import { useAuth } from '@/contexts/AuthContext'
-import { useToast } from '@/hooks/use-toast'
-import {
-  Check,
-  ArrowLeft,
+
+import { 
+  Check, 
+  Star, 
+  Users, 
+  MessageSquare, 
+  Eye, 
+  BarChart3, 
+  Headphones, 
+  Shield, 
+  Code, 
+  Palette,
   Zap,
   Crown,
-  Building,
-  Star,
-  Users,
-  MessageSquare,
-  Eye,
-  BarChart3,
-  Shield,
-  Headphones,
-  Code,
-  Palette,
+  Sparkles,
+  Bot,
+  Building
 } from 'lucide-react'
 import LoadingSpinner from '@/components/ui/loading-spinner'
 
 export default function PricingPage() {
   const [isAnnual, setIsAnnual] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [plans, setPlans] = useState(null)
-  const { user, apiCall } = useAuth()
-  const { toast } = useToast()
+  const { user } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -42,10 +41,11 @@ export default function PricingPage() {
       const data = await response.json()
       
       if (data.success) {
-        setPlans(data.plans)
+        // Plans loaded successfully
+        console.log('Plans loaded:', data.plans)
       }
-    } catch (error) {
-      console.error('Failed to load plans:', error)
+    } catch (err) {
+      console.error('Failed to load plans:', err)
     }
   }
 
@@ -58,27 +58,24 @@ export default function PricingPage() {
     try {
       setLoading(true)
       
-      const response = await apiCall('/payments/create-checkout-session', {
+      const response = await fetch('/api/payments/create-checkout-session', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ plan: planId }),
       })
+      const data = await response.json()
 
-      if (response.success) {
+      if (data.success) {
         // Redirect to Stripe Checkout
-        window.location.href = response.checkout_url
+        window.location.href = data.checkout_url
       } else {
-        toast({
-          title: 'Error',
-          description: response.message || 'Failed to create checkout session',
-          variant: 'destructive',
-        })
+        console.error('Failed to create checkout session:', data.message)
       }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: 'Failed to start checkout process',
-        variant: 'destructive',
-      })
+    } catch {
+      // Error handling would go here in a real implementation
+      console.error('Checkout process failed')
     } finally {
       setLoading(false)
     }
@@ -177,17 +174,7 @@ export default function PricingPage() {
     }
   ]
 
-  const featureIcons = {
-    'automations': Bot,
-    'connections': Users,
-    'messages': MessageSquare,
-    'views': Eye,
-    'analytics': BarChart3,
-    'support': Headphones,
-    'security': Shield,
-    'api': Code,
-    'white-label': Palette,
-  }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">

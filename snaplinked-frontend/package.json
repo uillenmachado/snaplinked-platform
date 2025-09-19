@@ -1,7 +1,7 @@
 {
   "name": "snaplinked-frontend",
   "description": "SnapLinked Frontend - Interface moderna e responsiva para automação LinkedIn. Plataforma SaaS completa com React 18, Vite, Tailwind CSS e componentes Shadcn/ui. Sistema de automação inteligente para networking profissional no LinkedIn com analytics avançados, configurações personalizáveis e interface 100% em português.",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "private": true,
   "type": "module",
   "keywords": ["linkedin", "automation", "networking", "saas", "react", "vite", "tailwind"],

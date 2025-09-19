@@ -82,7 +82,7 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
-      const { confirm_password, agree_terms, ...registrationData } = formData
+      const { confirm_password: _confirmPassword, agree_terms: _agreeTerms, ...registrationData } = formData
       const result = await register(registrationData)
       
       if (result.success) {
@@ -90,7 +90,7 @@ export default function RegisterPage() {
       } else {
         setError(result.error || 'Registration failed')
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setIsLoading(false)

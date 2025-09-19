@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Save, User, Bell, Shield, CreditCard, Trash2, Eye, EyeOff, Download, Upload } from 'lucide-react'
 import LoadingSpinner from '@/components/ui/loading-spinner'
 
@@ -49,7 +49,7 @@ const SettingsPage = () => {
     { id: 'automation', label: 'Automação', icon: CreditCard }
   ]
 
-  const handleSave = async (section) => {
+  const handleSave = async () => {
     setLoading(true)
     // Simulate API call
     setTimeout(() => {
@@ -91,7 +91,7 @@ const SettingsPage = () => {
           const importedSettings = JSON.parse(e.target.result)
           setSettings(importedSettings)
           alert('Configurações importadas com sucesso!')
-        } catch (error) {
+        } catch {
           alert('Erro ao importar configurações. Verifique o formato do arquivo.')
         }
       }

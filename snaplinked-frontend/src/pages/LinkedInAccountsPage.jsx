@@ -30,6 +30,8 @@ const LinkedInAccountsPage = () => {
   const [showManualLogin, setShowManualLogin] = useState(false);
 
   useEffect(() => {
+
+
     loadProfile();
     checkUrlParams();
   }, []);
@@ -67,7 +69,7 @@ const LinkedInAccountsPage = () => {
       if (response.data.success) {
         setProfile(response.data.profile);
       }
-    } catch (error) {
+    } catch {
       // Perfil não conectado - normal
     }
   };
@@ -86,7 +88,7 @@ const LinkedInAccountsPage = () => {
       
       // Redirecionar para LinkedIn OAuth
       window.location.href = authUrl;
-    } catch (error) {
+    } catch {
       setError('Erro ao conectar com LinkedIn via OAuth');
     } finally {
       setLoading(false);
@@ -131,7 +133,7 @@ const LinkedInAccountsPage = () => {
         setProfile(null);
         setSuccess('Conta LinkedIn desconectada com sucesso');
       }
-    } catch (error) {
+    } catch {
       setError('Erro ao desconectar conta');
     } finally {
       setLoading(false);
@@ -148,7 +150,7 @@ const LinkedInAccountsPage = () => {
       if (response.data.success) {
         setSuccess('Conexão testada com sucesso! Automações funcionando.');
       }
-    } catch (error) {
+    } catch {
       setError('Erro ao testar conexão');
     } finally {
       setLoading(false);

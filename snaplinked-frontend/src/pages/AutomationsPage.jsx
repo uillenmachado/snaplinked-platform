@@ -46,8 +46,8 @@ const AutomationsPage = () => {
       if (response.data.success) {
         setAutomations(response.data.automations);
       }
-    } catch (error) {
-      console.error('Erro ao carregar automações:', error);
+    } catch (err) {
+      console.error('Erro ao carregar automações:', err);
     }
   };
 
@@ -76,8 +76,8 @@ const AutomationsPage = () => {
       } else {
         setError(response.data.error || 'Erro na automação');
       }
-    } catch (error) {
-      const errorMsg = error.response?.data?.error || 'Erro ao executar automação';
+    } catch (err) {
+      const errorMsg = err.response?.data?.error || 'Erro ao executar automação';
       setError(errorMsg);
     } finally {
       setLoading(false);

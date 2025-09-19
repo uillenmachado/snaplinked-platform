@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { useAuth } from '@/contexts/AuthContext'
-import { useToast } from '@/hooks/use-toast'
+
 import {
   Users,
   MessageSquare,
@@ -25,14 +25,14 @@ import {
 import LoadingSpinner from '@/components/ui/loading-spinner'
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     connections_sent: 156,
     messages_sent: 89,
     profiles_viewed: 342,
     success_rate: 78.5,
     profiles_viewed_today: 25
   })
-  const [recentActivity, setRecentActivity] = useState([
+  const [recentActivity] = useState([
     {
       id: 1,
       type: 'success',
@@ -48,7 +48,7 @@ export default function DashboardPage() {
       created_at: new Date().toISOString()
     }
   ])
-  const [automations, setAutomations] = useState([
+  const [automations] = useState([
     {
       id: 1,
       name: 'Tech Professionals Outreach',
@@ -70,9 +70,7 @@ export default function DashboardPage() {
       success_rate: 82.1
     }
   ])
-  const [loading, setLoading] = useState(false)
-  const { user, apiCall } = useAuth()
-  const { toast } = useToast()
+  const { user } = useAuth()
 
   const getGreeting = () => {
     const hour = new Date().getHours()
@@ -93,13 +91,7 @@ export default function DashboardPage() {
 
   const limits = getSubscriptionLimits(user?.subscription_plan)
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <LoadingSpinner size="lg" />
-      </div>
-    )
-  }
+
 
   return (
     <div className="space-y-4 max-w-7xl">

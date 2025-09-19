@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const ScriptsPage = () => {
   const [selectedScript, setSelectedScript] = useState('connection');
-  const [scriptCode, setScriptCode] = useState('');
+
 
   const scripts = {
     connection: {

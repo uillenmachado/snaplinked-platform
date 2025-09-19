@@ -1,6 +1,6 @@
 """
 SnapLinked Backend - Configurações
-Versão 4.1.0 - Sistema de configuração centralizado e otimizado
+Versão 4.2.0 - Sistema de configuração centralizado e otimizado
 """
 
 import os
@@ -10,10 +10,10 @@ class Config:
     """Configuração base da aplicação"""
     
     # Configurações básicas
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'snaplinked-secret-key-2025-v4.1.0')
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'snaplinked-secret-key-2025-v4.2.0')
     DEBUG = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
     ENV = os.environ.get('FLASK_ENV', 'production')
-    VERSION = '4.1.0'
+    VERSION = '4.2.0'
     
     # Configurações de banco de dados
     DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:///snaplinked.db')

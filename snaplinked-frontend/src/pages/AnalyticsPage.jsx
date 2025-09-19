@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { BarChart3, TrendingUp, Users, MessageSquare, Eye, Calendar, Download, Filter } from 'lucide-react'
+import { TrendingUp, Users, MessageSquare, Eye, Download } from 'lucide-react'
 import LoadingSpinner from '@/components/ui/loading-spinner'
 
 const AnalyticsPage = () => {

@@ -12,50 +12,52 @@ const LinkedInCallbackPage = () => {
   const [message, setMessage] = useState('Processando conexão com LinkedIn...');
 
   useEffect(() => {
+    const handleCallback = async () => {
+      try {
+        const code = searchParams.get('code');
+        const error = searchParams.get('error');
+
+        if (error) {
+          setStatus('error');
+          setMessage(`Erro na autorização: ${error}`);
+          setTimeout(() => navigate('/linkedin-accounts'), 3000);
+          return;
+        }
+
+        if (!code) {
+          setStatus('error');
+          setMessage('Código de autorização não recebido');
+          setTimeout(() => navigate('/linkedin-accounts'), 3000);
+          return;
+        }
+
+        // Enviar código para o backend processar
+        const response = await api.get(`/auth/linkedin/callback?code=${code}`);
+
+        if (response.data.success) {
+          setStatus('success');
+          setMessage('Conta LinkedIn conectada com sucesso!');
+          
+          // Redirecionar para página de contas LinkedIn após 2 segundos
+          setTimeout(() => {
+            navigate('/linkedin-accounts?success=oauth_connected');
+          }, 2000);
+        } else {
+          setStatus('error');
+          setMessage(response.data.error || 'Erro ao processar conexão');
+          setTimeout(() => navigate('/linkedin-accounts'), 3000);
+        }
+      } catch {
+        setStatus('error');
+        setMessage('Erro interno ao processar conexão');
+        setTimeout(() => navigate('/linkedin-accounts'), 3000);
+      }
+    };
+
     handleCallback();
-  }, []);
+  }, [searchParams, navigate]);
 
-  const handleCallback = async () => {
-    try {
-      const code = searchParams.get('code');
-      const error = searchParams.get('error');
 
-      if (error) {
-        setStatus('error');
-        setMessage(`Erro na autorização: ${error}`);
-        setTimeout(() => navigate('/linkedin-accounts'), 3000);
-        return;
-      }
-
-      if (!code) {
-        setStatus('error');
-        setMessage('Código de autorização não recebido');
-        setTimeout(() => navigate('/linkedin-accounts'), 3000);
-        return;
-      }
-
-      // Enviar código para o backend processar
-      const response = await api.get(`/auth/linkedin/callback?code=${code}`);
-
-      if (response.data.success) {
-        setStatus('success');
-        setMessage('Conta LinkedIn conectada com sucesso!');
-        
-        // Redirecionar para página de contas LinkedIn após 2 segundos
-        setTimeout(() => {
-          navigate('/linkedin-accounts?success=oauth_connected');
-        }, 2000);
-      } else {
-        setStatus('error');
-        setMessage(response.data.error || 'Erro ao processar conexão');
-        setTimeout(() => navigate('/linkedin-accounts'), 3000);
-      }
-    } catch (error) {
-      setStatus('error');
-      setMessage('Erro interno ao processar conexão');
-      setTimeout(() => navigate('/linkedin-accounts'), 3000);
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">
