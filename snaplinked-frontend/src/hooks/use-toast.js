@@ -124,7 +124,7 @@ function toast({ ...props }) {
 function useToast() {
   const [state, setState] = useState(memoryState)
 
-  useState(() => {
+  useCallback(() => {
     listeners.push(setState)
     return () => {
       const index = listeners.indexOf(setState)
@@ -132,7 +132,7 @@ function useToast() {
         listeners.splice(index, 1)
       }
     }
-  })
+  }, [])
 
   return {
     ...state,
