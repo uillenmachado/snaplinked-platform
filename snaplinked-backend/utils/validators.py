@@ -9,7 +9,18 @@ from flask import request, jsonify
 
 def validate_email(email: str) -> bool:
     """Valida formato de email"""
-    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    # Padrão mais restritivo que não permite pontos consecutivos
+    pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9._%-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?\.[a-zA-Z]{2,}$'
+    
+    # Verificar se não há pontos consecutivos
+    if '..' in email:
+        return False
+    
+    # Verificar se não começa ou termina com ponto
+    local_part = email.split('@')[0] if '@' in email else email
+    if local_part.startswith('.') or local_part.endswith('.'):
+        return False
+    
     return re.match(pattern, email) is not None
 
 def validate_password(password: str) -> Dict[str, Any]:
