@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 SnapLinked Backend - Versão para Deploy Permanente
 Sistema modular de automação LinkedIn (sem Playwright para compatibilidade)
@@ -14,6 +13,7 @@ from functools import wraps
 
 # Importar configurações
 from config.settings import Config
+from linkedin_automation_engine import LinkedInAutomationEngine
 
 # Configure logging
 logging.basicConfig(
@@ -25,10 +25,8 @@ logger = logging.getLogger(__name__)
 def create_app(config_name=None):
     """Factory function para criar a aplicação Flask"""
     
-    # Criar aplicação Flask
     app = Flask(__name__, static_folder='static', static_url_path='')
     
-    # Carregar configuração baseada no ambiente
     if config_name == 'testing':
         app.config['TESTING'] = True
         app.config['SECRET_KEY'] = 'test-secret-key'
@@ -37,11 +35,9 @@ def create_app(config_name=None):
         config_obj = Config()
         app.config.from_object(config_obj)
     
-    # Configurar CORS
-    cors_origins = ['*']  # Permitir todas as origens para deploy
+    cors_origins = ['*']
     CORS(app, origins=cors_origins)
     
-    # Middleware de autenticação simplificado
     def token_required(f):
         @wraps(f)
         def decorated(*args, **kwargs):
@@ -52,7 +48,6 @@ def create_app(config_name=None):
             if token.startswith('Bearer '):
                 token = token[7:]
                 try:
-                    # Validação básica do token
                     data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
                     return f(*args, **kwargs)
                 except:
@@ -61,22 +56,15 @@ def create_app(config_name=None):
             return jsonify({'success': False, 'message': 'Formato de token inválido'}), 401
         return decorated
     
-    # Rotas de autenticação
     @app.route('/api/auth/login', methods=['POST'])
     def login():
-        """Login endpoint"""
         data = request.get_json()
-        if data is None:
-            return jsonify({'success': False, 'message': 'Dados inválidos'}), 400
+        if not data or not data.get('email') or not data.get('password'):
+            return jsonify({'success': False, 'message': 'Email e senha são obrigatórios'}), 400
         
         email = data.get('email')
         password = data.get('password')
         
-        # Validar campos obrigatórios - verificar se estão ausentes ou vazios
-        if not email or not password:
-            return jsonify({'success': False, 'message': 'Email e senha são obrigatórios'}), 400
-        
-        # Validação simples para demo e testes
         if (email == 'demo@snaplinked.com' and password == 'demo123') or \
            (email == 'test@example.com' and password == 'TestPassword123'):
             token = jwt.encode({
@@ -87,35 +75,22 @@ def create_app(config_name=None):
             
             return jsonify({
                 'success': True,
-                'token': token,
-                'tokens': {
-                    'access_token': token,
-                    'refresh_token': token
-                },
-                'user': {
-                    'id': 1,
-                    'email': email,
-                    'name': 'Demo User' if email == 'demo@snaplinked.com' else 'Test User',
-                    'plan': 'Premium'
-                }
+                'tokens': {'access_token': token, 'refresh_token': token},
+                'user': {'id': 1, 'email': email, 'name': 'Test User', 'plan': 'Premium'}
             })
         
         return jsonify({'success': False, 'message': 'Credenciais inválidas'}), 401
-    
+
     @app.route('/api/auth/register', methods=['POST'])
     def register():
-        """Register endpoint"""
         data = request.get_json()
         if not data:
             return jsonify({'success': False, 'message': 'Dados inválidos'}), 400
         
-        # Validar campos obrigatórios
         required_fields = ['email', 'password', 'first_name', 'last_name']
-        for field in required_fields:
-            if not data.get(field):
-                return jsonify({'success': False, 'message': f'Campo {field} é obrigatório'}), 400
+        if any(not data.get(field) for field in required_fields):
+            return jsonify({'success': False, 'message': 'Campos obrigatórios ausentes'}), 400
         
-        # Criar token para o usuário registrado
         token = jwt.encode({
             'user_id': 2,
             'email': data.get('email'),
@@ -125,321 +100,141 @@ def create_app(config_name=None):
         return jsonify({
             'success': True, 
             'message': 'Usuário registrado com sucesso',
-            'tokens': {
-                'access_token': token,
-                'refresh_token': token
-            },
-            'user': {
-                'id': 2,
-                'email': data.get('email'),
-                'name': f"{data.get('first_name')} {data.get('last_name')}",
-                'plan': 'Free'
-            }
+            'tokens': {'access_token': token, 'refresh_token': token},
+            'user': {'id': 2, 'email': data.get('email'), 'name': f"{data.get('first_name')} {data.get('last_name')}", 'plan': 'Free'}
         }), 201
-    
+
     @app.route('/api/auth/logout', methods=['POST'])
     def logout():
-        """Logout endpoint"""
         return jsonify({'success': True, 'message': 'Logout realizado com sucesso'}), 200
-    
+
     @app.route('/api/auth/me', methods=['GET'])
     @token_required
     def get_current_user():
-        """Get current user endpoint"""
-        return jsonify({
-            'success': True,
-            'user': {
-                'id': 1,
-                'email': 'test@example.com',
-                'name': 'Test User',
-                'plan': 'Premium'
-            }
-        }), 200
-    
-    # Rotas de automação
+        return jsonify({'success': True, 'user': {'id': 1, 'email': 'test@example.com', 'name': 'Test User', 'plan': 'Premium'}}), 200
+
     @app.route('/api/automations', methods=['GET'])
     @token_required
     def get_automations():
-        """Get automations"""
-        return jsonify({
-            'success': True,
-            'automations': [
-                {
-                    'id': 1,
-                    'name': 'Tech Professionals Outreach',
-                    'status': 'active',
-                    'executions': 156,
-                    'success_rate': 78.5
-                },
-                {
-                    'id': 2,
-                    'name': 'Follow-up Messages',
-                    'status': 'paused',
-                    'executions': 89,
-                    'success_rate': 82.1
-                }
-            ]
-        })
-    
+        return jsonify({'success': True, 'automations': []})
+
     @app.route('/api/automations', methods=['POST'])
     @token_required
     def create_automation():
-        """Create new automation"""
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Dados inválidos'}), 400
-        
-        required_fields = ['name', 'type']
-        for field in required_fields:
-            if not data.get(field):
-                return jsonify({'success': False, 'message': f'Campo {field} é obrigatório'}), 400
-        
-        return jsonify({
-            'success': True,
-            'message': 'Automação criada com sucesso',
-            'automation': {
-                'id': 3,
-                'name': data.get('name'),
-                'type': data.get('type'),
-                'status': 'active'
-            }
-        }), 201
-    
+        return jsonify({'success': True, 'message': 'Automação criada com sucesso'}), 201
+
     @app.route('/api/automations/<int:automation_id>', methods=['PUT'])
     @token_required
     def update_automation(automation_id):
-        """Update automation"""
-        return jsonify({'message': 'Automação atualizada com sucesso'}), 200
-    
+        return jsonify({'success': True, 'message': 'Automação atualizada com sucesso'}), 200
+
     @app.route('/api/automations/<int:automation_id>', methods=['DELETE'])
     @token_required
     def delete_automation(automation_id):
-        """Delete automation"""
-        return jsonify({'message': 'Automação removida com sucesso'}), 200
-    
+        return jsonify({'success': True, 'message': 'Automação removida com sucesso'}), 200
+
     @app.route('/api/automations/<int:automation_id>/toggle', methods=['POST'])
     @token_required
     def toggle_automation(automation_id):
-        """Toggle automation status"""
-        return jsonify({'message': 'Status da automação alterado'}), 200
-    
+        return jsonify({'success': True, 'message': 'Status da automação alterado'}), 200
+
     @app.route('/api/automations/run', methods=['POST'])
     @token_required
     def run_automation():
-        """Run automation"""
         data = request.get_json()
         if not data or not data.get('keywords'):
             return jsonify({'success': False, 'message': 'Keywords são obrigatórias'}), 400
         
         try:
-            # Importar e usar o engine de automação
-            from linkedin_automation_engine import LinkedInAutomationEngine
-            
-            # Criar instância do engine
             engine = LinkedInAutomationEngine()
-            
-            # Configuração da automação
-            automation_config = {
-                'type': data.get('type', 'connection_requests'),
-                'keywords': data.get('keywords'),
-                'max_actions': data.get('max_actions', 25),
-                'message': data.get('message', '')
-            }
-            
-            # Executar automação de forma assíncrona
-            import asyncio
+            config = {'type': data.get('type', 'connection_requests'), 'keywords': data.get('keywords')}
             
             async def perform_automation():
-                # Verificar se já está logado ou fazer login
-                if not engine.is_logged_in:
-                    # Para demo, assumir que está logado
-                    engine.is_logged_in = True
-                
-                result = await engine.run_automation(automation_config)
+                result = await engine.run_automation(config)
                 await engine.close()
                 return result
             
-            # Executar automação
             result = asyncio.run(perform_automation())
-            
-            if result['success']:
-                return jsonify(result), 200
-            else:
-                return jsonify(result), 400
-                
+            return jsonify(result), 200 if result.get('success') else 400
         except Exception as e:
             logger.error(f"Erro na automação: {e}")
-            return jsonify({
-                'success': False,
-                'message': f'Erro interno: {str(e)}'
-            }), 500
-    
+            return jsonify({'success': False, 'message': f'Erro interno: {str(e)}'}), 500
+
     @app.route('/api/automations/stats', methods=['GET'])
     @token_required
     def get_automation_stats():
-        """Get automation stats"""
         try:
-            # Importar e usar o engine de automação
-            from linkedin_automation_engine import LinkedInAutomationEngine
-            
-            # Criar instância do engine
             engine = LinkedInAutomationEngine()
-            
-            # Executar obtenção de stats de forma assíncrona
-            import asyncio
-            
             async def get_stats():
                 result = await engine.get_stats()
                 await engine.close()
                 return result
-            
-            # Obter estatísticas
             result = asyncio.run(get_stats())
-            
-            return jsonify({
-                'success': True,
-                'stats': result.get('stats', {
-                    'connections_sent': 0,
-                    'messages_sent': 0,
-                    'profiles_viewed': 0,
-                    'errors': 0,
-                    'is_logged_in': False
-                })
-            }), 200
-                
+            return jsonify(result), 200
         except Exception as e:
             logger.error(f"Erro ao obter estatísticas: {e}")
-            return jsonify({
-                'success': True,
-                'stats': {
-                    'connections_sent': 0,
-                    'messages_sent': 0,
-                    'profiles_viewed': 0,
-                    'errors': 0,
-                    'is_logged_in': False
-                }
-            }), 200
-    
-    # Rotas de analytics
+            return jsonify({'success': False, 'message': f'Erro interno: {str(e)}'}), 500
+
     @app.route('/api/analytics/dashboard', methods=['GET'])
     @token_required
     def get_dashboard_analytics():
-        """Get dashboard analytics"""
-        return jsonify({
-            'connections_sent': 1247,
-            'acceptance_rate': 73,
-            'messages_sent': 892,
-            'response_rate': 41,
-            'daily_activity': [
-                {'date': '14/01', 'connections': 45},
-                {'date': '15/01', 'connections': 52},
-                {'date': '16/01', 'connections': 38},
-                {'date': '17/01', 'connections': 61},
-                {'date': '18/01', 'connections': 47}
-            ]
-        })
-    
-    # Rotas do LinkedIn
-    @app.route('/api/linkedin/accounts', methods=['GET'])
+        return jsonify({'connections_sent': 1247, 'acceptance_rate': 73})
+
+    @app.route('/api/payments/plans', methods=['GET'])
     @token_required
-    def get_linkedin_accounts():
-        """Get LinkedIn accounts"""
-        return jsonify({'accounts': []})
-    
-    @app.route('/api/auth/linkedin/connect', methods=['GET'])
-    def linkedin_connect_oauth():
-        """LinkedIn OAuth connect"""
-        # Verificar se as credenciais estão configuradas
-        if not app.config.get('LINKEDIN_CLIENT_ID') or not app.config.get('LINKEDIN_CLIENT_SECRET'):
-            return jsonify({'success': False, 'error': 'Credenciais LinkedIn não configuradas'}), 500
-        
-        # Retornar URL de autorização
-        return jsonify({
-            'success': True,
-            'authorization_url': f"https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id={app.config.get('LINKEDIN_CLIENT_ID')}&redirect_uri={app.config.get('LINKEDIN_REDIRECT_URI')}&scope=openid%20profile%20email"
-        }), 200
-    
-    @app.route('/api/linkedin/connect', methods=['POST'])
-    @token_required
-    def connect_linkedin():
-        """Connect LinkedIn account"""
-        data = request.get_json()
-        if not data:
-            return jsonify({'error': 'Dados inválidos'}), 500
-        
-        return jsonify({'message': 'Conta LinkedIn conectada'}), 200
-    
+    def get_payment_plans():
+        return jsonify({'success': True, 'plans': []})
+
     @app.route('/api/linkedin/manual-login', methods=['POST'])
     @token_required
     def linkedin_manual_login():
-        """LinkedIn manual login"""
         data = request.get_json()
         if not data or not data.get('email') or not data.get('password'):
             return jsonify({'success': False, 'message': 'Email e senha são obrigatórios'}), 400
         
         try:
-            # Importar e usar o engine de automação
-            from linkedin_automation_engine import LinkedInAutomationEngine
-            
-            # Criar instância do engine
             engine = LinkedInAutomationEngine()
-            
-            # Executar login de forma assíncrona
-            import asyncio
-            
             async def perform_login():
-                result = await engine.login_with_credentials(
-                    data.get('email'), 
-                    data.get('password')
-                )
+                result = await engine.login_with_credentials(data['email'], data['password'])
                 await engine.close()
                 return result
-            
-            # Executar login
             result = asyncio.run(perform_login())
-            
-            if result['success']:
-                return jsonify(result), 200
-            else:
-                return jsonify(result), 400
-                
+            return jsonify(result), 200 if result.get('success') else 400
         except Exception as e:
             logger.error(f"Erro no login manual: {e}")
-            return jsonify({
-                'success': False,
-                'message': f'Erro interno: {str(e)}'
-            }), 500
-    
-    # Rotas para servir o frontend
+            return jsonify({'success': False, 'message': f'Erro interno: {str(e)}'}), 500
+
+    @app.route('/api/auth/linkedin/connect', methods=['GET'])
+    def linkedin_connect_oauth():
+        if not app.config.get('LINKEDIN_CLIENT_ID') or not app.config.get('LINKEDIN_CLIENT_SECRET'):
+            return jsonify({'success': False, 'error': 'Credenciais LinkedIn não configuradas'}), 500
+        
+        return jsonify({'success': True, 'authorization_url': 'https://www.linkedin.com/oauth/v2/authorization'}), 200
+
     @app.route('/')
     def serve_frontend():
-        """Serve the React frontend"""
         return send_from_directory(app.static_folder, 'index.html')
 
     @app.route('/<path:path>')
     def serve_static_files(path):
-        """Serve static files or fallback to index.html for SPA routing"""
         try:
             return send_from_directory(app.static_folder, path)
         except:
             return send_from_directory(app.static_folder, 'index.html')
-    
-    # Error handlers
+
     @app.errorhandler(404)
     def not_found(error):
-        """Handle 404 by serving frontend"""
+        if request.path.startswith('/api/'):
+            return jsonify({'success': False, 'message': 'Endpoint não encontrado'}), 404
         return send_from_directory(app.static_folder, 'index.html')
 
     @app.errorhandler(500)
     def internal_error(error):
-        """Handle 500 errors"""
-        return {'error': 'Internal server error'}, 500
-    
-    # Health check endpoint
-    @app.route('/health')
+        return jsonify({'error': 'Internal server error'}), 500
+
+    @app.route('/api/health')
     def health_check():
-        """Health check endpoint"""
-        return {
+                return {
             'status': 'healthy',
             'service': 'SnapLinked API',
             'version': '4.1.0',
@@ -453,46 +248,15 @@ def create_app(config_name=None):
                 'security_improvements': True
             }
         }
-    
-    # Rota para servir o frontend (apenas em produção)
-    if not app.config.get('TESTING', False):
-        @app.route('/')
-        @app.route('/<path:path>')
-        def serve_frontend(path=''):
-            """Serve the React frontend"""
-            if path and path.startswith('api/'):
-                # Se for uma rota da API, retornar 404
-                return jsonify({'error': 'API endpoint not found'}), 404
-            
-            # Servir arquivos estáticos do frontend
-            if path and '.' in path:
-                return app.send_static_file(path)
-            
-            # Para todas as outras rotas, servir o index.html (SPA routing)
-            return app.send_static_file('index.html')
-    
-    logger.info(f"SnapLinked Backend iniciado - Configuração: {config_name or 'default'}")
-    logger.info(f"Debug mode: {app.debug}")
-    logger.info(f"CORS origins: {cors_origins}")
-    
+
     return app
 
 if __name__ == '__main__':
-    # Criar aplicação para execução local
     app = create_app()
-    # Configuração para execução local
     port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
-    
-    logger.info(f"Iniciando servidor na porta {port}")
-    logger.info(f"Modo debug: {debug}")
-    
-    app.run(
-        host='0.0.0.0',
-        port=port,
-        debug=debug
-    )
+    app.run(host='0.0.0.0', port=port)
 
-# Criar aplicação para deploy apenas quando necessário
-def get_app():
-    return create_app()
+
+
+import asyncio
+
