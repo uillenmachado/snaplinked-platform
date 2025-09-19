@@ -1,8 +1,17 @@
 {
   "name": "snaplinked-frontend",
+  "description": "SnapLinked Frontend - Interface moderna e responsiva para automação LinkedIn. Plataforma SaaS completa com React 18, Vite, Tailwind CSS e componentes Shadcn/ui. Sistema de automação inteligente para networking profissional no LinkedIn com analytics avançados, configurações personalizáveis e interface 100% em português.",
+  "version": "4.1.0",
   "private": true,
-  "version": "0.0.0",
   "type": "module",
+  "keywords": ["linkedin", "automation", "networking", "saas", "react", "vite", "tailwind"],
+  "author": "Uillen Machado <uillen@snaplinked.com>",
+  "license": "MIT",
+  "homepage": "https://snaplinked.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uillenmachado/snaplinked-platform.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",

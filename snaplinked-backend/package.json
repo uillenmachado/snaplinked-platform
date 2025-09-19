@@ -1,0 +1,44 @@
+{
+  "name": "snaplinked-backend",
+  "description": "SnapLinked Backend - API robusta e segura para automação LinkedIn. Sistema backend completo em Python Flask com Playwright para automação de navegador, autenticação JWT, integração LinkedIn OAuth 2.0, analytics avançados e motor de automação inteligente para networking profissional.",
+  "version": "4.1.0",
+  "private": true,
+  "keywords": ["linkedin", "automation", "api", "flask", "playwright", "networking", "saas", "backend"],
+  "author": "Uillen Machado <uillen@snaplinked.com>",
+  "license": "MIT",
+  "homepage": "https://snaplinked.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uillenmachado/snaplinked-platform.git"
+  },
+  "main": "main.py",
+  "scripts": {
+    "start": "python main.py",
+    "dev": "python main.py",
+    "test": "pytest",
+    "test:coverage": "pytest --cov=src",
+    "lint": "flake8 src/",
+    "format": "black src/"
+  },
+  "engines": {
+    "python": ">=3.11.0"
+  },
+  "dependencies": {
+    "Flask": "2.3.3",
+    "Flask-CORS": "4.0.0",
+    "requests": "2.31.0",
+    "playwright": "1.40.0",
+    "PyJWT": "2.8.0",
+    "Werkzeug": "2.3.7",
+    "python-dotenv": "1.0.0",
+    "gunicorn": "21.2.0"
+  },
+  "devDependencies": {
+    "pytest": "7.4.3",
+    "pytest-flask": "1.3.0",
+    "pytest-asyncio": "0.21.1",
+    "coverage": "7.3.2",
+    "black": "23.9.1",
+    "flake8": "6.1.0"
+  }
+}
