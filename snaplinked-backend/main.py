@@ -7,9 +7,14 @@ from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 import os
 import logging
+import asyncio
 from datetime import datetime
 import jwt
 from functools import wraps
+from dotenv import load_dotenv
+
+# Carregar variáveis de ambiente
+load_dotenv()
 
 # Importar configurações
 from config.settings import Config
@@ -211,6 +216,62 @@ def create_app(config_name=None):
         
         return jsonify({'success': True, 'authorization_url': 'https://www.linkedin.com/oauth/v2/authorization'}), 200
 
+    @app.route('/api/auth/linkedin/callback', methods=['GET'])
+    def linkedin_oauth_callback():
+        """Callback para OAuth do LinkedIn"""
+        code = request.args.get('code')
+        if not code:
+            return jsonify({'success': False, 'error': 'Código de autorização não fornecido'}), 400
+        
+        try:
+            # Trocar código por token de acesso
+            token_url = 'https://www.linkedin.com/oauth/v2/accessToken'
+            token_data = {
+                'grant_type': 'authorization_code',
+                'code': code,
+                'redirect_uri': app.config.get('LINKEDIN_REDIRECT_URI'),
+                'client_id': app.config.get('LINKEDIN_CLIENT_ID'),
+                'client_secret': app.config.get('LINKEDIN_CLIENT_SECRET')
+            }
+            
+            import requests
+            token_response = requests.post(token_url, data=token_data)
+            token_json = token_response.json()
+            
+            if 'access_token' not in token_json:
+                return jsonify({'success': False, 'error': 'Falha ao obter token de acesso'}), 400
+            
+            access_token = token_json['access_token']
+            
+            # Obter informações do perfil
+            profile_url = 'https://api.linkedin.com/v2/people/~:(id,firstName,lastName,profilePicture(displayImage~:playableStreams))'
+            headers = {'Authorization': f'Bearer {access_token}'}
+            profile_response = requests.get(profile_url, headers=headers)
+            profile_data = profile_response.json()
+            
+            # Obter email
+            email_url = 'https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))'
+            email_response = requests.get(email_url, headers=headers)
+            email_data = email_response.json()
+            
+            user_email = None
+            if 'elements' in email_data and len(email_data['elements']) > 0:
+                user_email = email_data['elements'][0]['handle~']['emailAddress']
+            
+            return jsonify({
+                'success': True,
+                'profile': {
+                    'id': profile_data.get('id'),
+                    'name': f"{profile_data.get('firstName', {}).get('localized', {}).get('pt_BR', '')} {profile_data.get('lastName', {}).get('localized', {}).get('pt_BR', '')}",
+                    'email': user_email,
+                    'avatar': profile_data.get('profilePicture', {}).get('displayImage~', {}).get('elements', [{}])[0].get('identifiers', [{}])[0].get('identifier', '')
+                }
+            })
+            
+        except Exception as e:
+            logger.error(f"Erro no callback OAuth: {e}")
+            return jsonify({'success': False, 'error': f'Erro interno: {str(e)}'}), 500
+
     @app.route('/')
     def serve_frontend():
         return send_from_directory(app.static_folder, 'index.html')
@@ -234,7 +295,7 @@ def create_app(config_name=None):
 
     @app.route('/api/health')
     def health_check():
-                return {
+        return {
             'status': 'healthy',
             'service': 'SnapLinked API',
             'version': '4.1.0',
@@ -255,8 +316,3 @@ if __name__ == '__main__':
     app = create_app()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
-
-
-
-import asyncio
-

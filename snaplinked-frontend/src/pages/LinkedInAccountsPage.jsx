@@ -77,14 +77,15 @@ const LinkedInAccountsPage = () => {
       setLoading(true);
       setError('');
       
-      const response = await api.get('/auth/linkedin/connect');
+      // Usar dados reais do LinkedIn OAuth
+      const clientId = import.meta.env.VITE_LINKEDIN_CLIENT_ID || '77jmwin70p0gge';
+      const redirectUri = import.meta.env.VITE_LINKEDIN_REDIRECT_URI || 'http://localhost:3000/auth/linkedin/callback';
+      const scopes = 'openid profile email';
       
-      if (response.data.success) {
-        // Redirecionar para LinkedIn OAuth
-        window.location.href = response.data.auth_url;
-      } else {
-        setError('Erro ao iniciar conexão OAuth');
-      }
+      const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}`;
+      
+      // Redirecionar para LinkedIn OAuth
+      window.location.href = authUrl;
     } catch (error) {
       setError('Erro ao conectar com LinkedIn via OAuth');
     } finally {

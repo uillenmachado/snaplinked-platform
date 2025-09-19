@@ -15,6 +15,7 @@ import AnalyticsPage from '@/pages/AnalyticsPage'
 import SettingsPage from '@/pages/SettingsPage'
 import ScriptsPage from '@/pages/ScriptsPage'
 import PricingPage from '@/pages/PricingPage'
+import LinkedInCallbackPage from '@/pages/LinkedInCallbackPage'
 
 // Layout Components
 import DashboardLayout from '@/components/layout/DashboardLayout'
@@ -83,6 +84,12 @@ function AppRoutes() {
             <RegisterPage />
           </PublicRoute>
         } 
+      />
+      
+      {/* LinkedIn OAuth Callback */}
+      <Route 
+        path="/auth/linkedin/callback" 
+        element={<LinkedInCallbackPage />} 
       />
       
       {/* Protected Dashboard Routes */}
