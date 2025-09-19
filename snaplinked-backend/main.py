@@ -454,21 +454,22 @@ def create_app(config_name=None):
             }
         }
     
-    # Rota para servir o frontend
-    @app.route('/')
-    @app.route('/<path:path>')
-    def serve_frontend(path=''):
-        """Serve the React frontend"""
-        if path and path.startswith('api/'):
-            # Se for uma rota da API, retornar 404
-            return jsonify({'error': 'API endpoint not found'}), 404
-        
-        # Servir arquivos estáticos do frontend
-        if path and '.' in path:
-            return app.send_static_file(path)
-        
-        # Para todas as outras rotas, servir o index.html (SPA routing)
-        return app.send_static_file('index.html')
+    # Rota para servir o frontend (apenas em produção)
+    if not app.config.get('TESTING', False):
+        @app.route('/')
+        @app.route('/<path:path>')
+        def serve_frontend(path=''):
+            """Serve the React frontend"""
+            if path and path.startswith('api/'):
+                # Se for uma rota da API, retornar 404
+                return jsonify({'error': 'API endpoint not found'}), 404
+            
+            # Servir arquivos estáticos do frontend
+            if path and '.' in path:
+                return app.send_static_file(path)
+            
+            # Para todas as outras rotas, servir o index.html (SPA routing)
+            return app.send_static_file('index.html')
     
     logger.info(f"SnapLinked Backend iniciado - Configuração: {config_name or 'default'}")
     logger.info(f"Debug mode: {app.debug}")
@@ -476,10 +477,9 @@ def create_app(config_name=None):
     
     return app
 
-# Criar aplicação para deploy
-app = create_app()
-
 if __name__ == '__main__':
+    # Criar aplicação para execução local
+    app = create_app()
     # Configuração para execução local
     port = int(os.environ.get('PORT', 5000))
     debug = os.environ.get('FLASK_DEBUG', 'false').lower() == 'true'
@@ -492,3 +492,7 @@ if __name__ == '__main__':
         port=port,
         debug=debug
     )
+
+# Criar aplicação para deploy apenas quando necessário
+def get_app():
+    return create_app()
