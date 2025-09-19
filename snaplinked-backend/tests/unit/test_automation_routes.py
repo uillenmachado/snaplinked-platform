@@ -14,9 +14,9 @@ from unittest.mock import patch, AsyncMock
 class TestAutomationRoutes:
     """Testes para as rotas de automação"""
     
-    def test_get_automations_success(self, client):
+    def test_get_automations_success(self, client, auth_headers):
         """Testa listagem de automações"""
-        response = client.get('/api/automations')
+        response = client.get('/api/automations', headers=auth_headers)
         
         assert response.status_code == 200
         data = json.loads(response.data)
@@ -24,7 +24,7 @@ class TestAutomationRoutes:
         assert 'automations' in data
         assert isinstance(data['automations'], list)
     
-    def test_create_automation_success(self, client, sample_automation_config):
+    def test_create_automation_success(self, client, sample_automation_config, auth_headers):
         """Testa criação de automação"""
         automation_data = {
             'name': 'Test Automation',
@@ -36,7 +36,8 @@ class TestAutomationRoutes:
         response = client.post(
             '/api/automations',
             data=json.dumps(automation_data),
-            content_type='application/json'
+            content_type='application/json',
+            headers=auth_headers
         )
         
         assert response.status_code == 201
@@ -45,7 +46,7 @@ class TestAutomationRoutes:
         assert 'automation' in data
         assert data['automation']['name'] == automation_data['name']
     
-    def test_create_automation_missing_fields(self, client):
+    def test_create_automation_missing_fields(self, client, auth_headers):
         """Testa criação de automação com campos ausentes"""
         response = client.post(
             '/api/automations',
@@ -61,7 +62,7 @@ class TestAutomationRoutes:
         assert data['success'] is False
         assert 'obrigatório' in data['error']
     
-    def test_update_automation_success(self, client):
+    def test_update_automation_success(self, client, auth_headers):
         """Testa atualização de automação"""
         automation_data = {
             'name': 'Updated Automation',
@@ -78,17 +79,17 @@ class TestAutomationRoutes:
         data = json.loads(response.data)
         assert data['success'] is True
     
-    def test_delete_automation_success(self, client):
+    def test_delete_automation_success(self, client, auth_headers):
         """Testa remoção de automação"""
-        response = client.delete('/api/automations/1')
+        response = client.delete('/api/automations/1', headers=auth_headers)
         
         assert response.status_code == 200
         data = json.loads(response.data)
         assert data['success'] is True
     
-    def test_toggle_automation_success(self, client):
+    def test_toggle_automation_success(self, client, auth_headers):
         """Testa toggle de automação"""
-        response = client.post('/api/automations/1/toggle')
+        response = client.post('/api/automations/1/toggle', headers=auth_headers)
         
         assert response.status_code == 200
         data = json.loads(response.data)
@@ -184,7 +185,7 @@ class TestAutomationRoutes:
         }
         mock_loop.run_until_complete.return_value = mock_result
         
-        response = client.get('/api/automations/stats')
+        response = client.get('/api/automations/stats', headers=auth_headers)
         
         assert response.status_code == 200
         data = json.loads(response.data)

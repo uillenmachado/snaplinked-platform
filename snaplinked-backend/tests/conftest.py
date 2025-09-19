@@ -93,8 +93,18 @@ def mock_automation_engine():
 @pytest.fixture
 def auth_headers():
     """Headers de autenticação para testes"""
+    import jwt
+    from datetime import datetime
+    
+    # Criar token válido para testes
+    token = jwt.encode({
+        'user_id': 1,
+        'email': 'test@example.com',
+        'exp': datetime.utcnow().timestamp() + 86400
+    }, 'test-secret-key', algorithm='HS256')
+    
     return {
-        'Authorization': 'Bearer test_token',
+        'Authorization': f'Bearer {token}',
         'Content-Type': 'application/json'
     }
 
