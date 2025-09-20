@@ -3,7 +3,7 @@ Testes de integração com LinkedIn
 """
 import pytest
 from src.main import app
-from config.security import SecurityConfig
+from src.config.security import SecurityConfig
 
 @pytest.fixture
 def client():

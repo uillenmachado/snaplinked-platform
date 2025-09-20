@@ -5,7 +5,7 @@ import pytest
 import jwt
 from datetime import datetime, timedelta
 from src.main import app
-from config.security import SecurityConfig
+from src.config.security import SecurityConfig
 
 @pytest.fixture
 def client():

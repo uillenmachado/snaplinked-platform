@@ -8,11 +8,12 @@ from datetime import datetime
 from functools import wraps
 from dotenv import load_dotenv
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import jwt
+import asyncio
 
-from config.config import Config
+from .config.config import Config
 
 # Configurar logging
 logging.basicConfig(
@@ -20,6 +21,15 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Criar aplicação Flask
+app = Flask(__name__)
+
+# Carregar configurações
+Config.init_app(app)
+
+# Setup CORS
+CORS(app)
 
 def create_app():
     """Cria e configura a aplicação Flask"""
@@ -32,20 +42,17 @@ def create_app():
     CORS(app, origins=app.config['CORS_ORIGINS'])
     
     # Registrar blueprints
-    from api.auth import auth_bp
-    from api.linkedin import linkedin_bp
-    from api.analytics import analytics_bp
-    from api.automations import automations_bp
+    from .api.auth import auth_bp
+    from .api.linkedin import linkedin_bp
+    from .api.analytics import analytics_bp
+    from .api.automations import automations_bp
     
     app.register_blueprint(auth_bp)
     app.register_blueprint(linkedin_bp)
     app.register_blueprint(analytics_bp)
     app.register_blueprint(automations_bp)
-from linkedin.engine import LinkedInAutomationEngine
 
-# Importar rotas
-from routes.feed_actions import feed_actions_bp
-from routes.simple_login import simple_login_bp
+from .linkedin.linkedin_automation_engine import LinkedInAutomationEngine
 
 # Configure logging
 logging.basicConfig(
@@ -322,10 +329,6 @@ def create_app(config_name=None):
         if request.path.startswith('/api/'):
             return jsonify({'success': False, 'message': 'Endpoint não encontrado'}), 404
         return send_from_directory(app.static_folder, 'index.html')
-
-    # Registrar blueprints
-    app.register_blueprint(feed_actions_bp)
-    app.register_blueprint(simple_login_bp)
 
     @app.errorhandler(500)
     def internal_error(error):
