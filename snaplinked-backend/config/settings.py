@@ -26,7 +26,7 @@ class Config:
     # Configurações LinkedIn OAuth
     LINKEDIN_CLIENT_ID = os.environ.get('LINKEDIN_CLIENT_ID')
     LINKEDIN_CLIENT_SECRET = os.environ.get('LINKEDIN_CLIENT_SECRET')
-    LINKEDIN_REDIRECT_URI = os.environ.get('LINKEDIN_REDIRECT_URI', 'http://localhost:3000/auth/linkedin/callback')
+    LINKEDIN_REDIRECT_URI = os.environ.get('LINKEDIN_REDIRECT_URI', 'https://snaplinked.com/auth/linkedin/callback')
     LINKEDIN_SCOPES = os.environ.get('LINKEDIN_SCOPES', 'openid profile email')
     
     # Configurações Gemini API
