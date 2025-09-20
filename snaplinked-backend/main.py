@@ -305,7 +305,7 @@ def create_app(config_name=None):
         return {
             'status': 'healthy',
             'service': 'SnapLinked API',
-            'version': '4.2.0',
+            'version': '4.3.0',
             'timestamp': datetime.utcnow().isoformat(),
             'features': {
                 'automation_engine': True,
