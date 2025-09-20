@@ -71,17 +71,24 @@ def create_app(config_name=None):
         password = data.get('password')
         
         if (email == 'demo@snaplinked.com' and password == 'demo123') or \
-           (email == 'test@example.com' and password == 'TestPassword123'):
+           (email == 'test@example.com' and password == 'TestPassword123') or \
+           (email == 'metodoivib2b@gmail.com' and password == 'Ivib2b2024'):
             token = jwt.encode({
                 'user_id': 1,
                 'email': email,
                 'exp': datetime.utcnow().timestamp() + 86400
             }, app.config['SECRET_KEY'], algorithm='HS256')
             
+            user_name = 'Test User'
+            if email == 'metodoivib2b@gmail.com':
+                user_name = 'Método IVIB2B'
+            elif email == 'demo@snaplinked.com':
+                user_name = 'Demo User'
+            
             return jsonify({
                 'success': True,
                 'tokens': {'access_token': token, 'refresh_token': token},
-                'user': {'id': 1, 'email': email, 'name': 'Test User', 'plan': 'Premium'}
+                'user': {'id': 1, 'email': email, 'name': user_name, 'plan': 'Premium'}
             })
         
         return jsonify({'success': False, 'message': 'Credenciais inválidas'}), 401
