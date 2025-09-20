@@ -20,6 +20,10 @@ load_dotenv()
 from config.settings import Config
 from linkedin_automation_engine import LinkedInAutomationEngine
 
+# Importar rotas
+from routes.feed_actions import feed_actions_bp
+from routes.simple_login import simple_login_bp
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -295,6 +299,10 @@ def create_app(config_name=None):
         if request.path.startswith('/api/'):
             return jsonify({'success': False, 'message': 'Endpoint não encontrado'}), 404
         return send_from_directory(app.static_folder, 'index.html')
+
+    # Registrar blueprints
+    app.register_blueprint(feed_actions_bp)
+    app.register_blueprint(simple_login_bp)
 
     @app.errorhandler(500)
     def internal_error(error):

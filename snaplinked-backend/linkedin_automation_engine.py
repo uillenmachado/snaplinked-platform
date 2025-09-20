@@ -24,6 +24,9 @@ class LinkedInAutomationEngine:
             'connections_sent': 0,
             'messages_sent': 0,
             'profiles_viewed': 0,
+            'likes_given': 0,
+            'comments_posted': 0,
+            'feed_interactions': 0,
             'errors': 0,
             'last_activity': None
         }
@@ -65,9 +68,14 @@ class LinkedInAutomationEngine:
     async def login_with_credentials(self, email, password):
         """Faz login no LinkedIn com credenciais do usuário"""
         try:
-            if not self.page:
+            # Inicializar navegador se necessário
+            if not self.browser:
                 await self.initialize_browser()
             
+            # Criar nova página
+            if not self.page:
+                self.page = await self.browser.new_page()
+                
             # Navegar para LinkedIn
             await self.page.goto('https://www.linkedin.com/login')
             await self.random_delay(2, 4)
@@ -139,7 +147,9 @@ class LinkedInAutomationEngine:
             self.user_profile = {
                 'name': name.strip(),
                 'headline': headline.strip(),
-                'logged_in_at': datetime.now().isoformat()
+                'logged_in_at': datetime.now().isoformat(),
+                'connectionType': 'manual',
+                'automationEnabled': True
             }
             
             logger.info(f"Perfil obtido: {name}")
@@ -149,7 +159,321 @@ class LinkedInAutomationEngine:
             self.user_profile = {
                 'name': 'Usuário LinkedIn',
                 'headline': '',
-                'logged_in_at': datetime.now().isoformat()
+                'logged_in_at': datetime.now().isoformat(),
+                'connectionType': 'manual',
+                'automationEnabled': True
+            }
+    
+    async def navigate_to_feed(self):
+        """Navega para o feed do LinkedIn"""
+        try:
+            await self.page.goto('https://www.linkedin.com/feed/')
+            await self.random_delay(3, 5)
+            
+            # Aguardar feed carregar
+            await self.page.wait_for_selector('[data-id]', timeout=10000)
+            
+            logger.info("Feed carregado com sucesso")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Erro ao carregar feed: {e}")
+            return False
+    
+    async def like_posts_in_feed(self, max_likes=10):
+        """Curte posts no feed do LinkedIn"""
+        try:
+            if not self.is_logged_in:
+                return {'success': False, 'error': 'not_logged_in'}
+            
+            # Navegar para o feed
+            if not await self.navigate_to_feed():
+                return {'success': False, 'error': 'failed_to_load_feed'}
+            
+            # Encontrar botões de curtir
+            like_buttons = await self.page.locator('button[aria-label*="Curtir"]').all()
+            
+            likes_given = 0
+            results = []
+            
+            for i, button in enumerate(like_buttons[:max_likes]):
+                try:
+                    # Verificar se já foi curtido
+                    aria_label = await button.get_attribute('aria-label')
+                    if 'Descurtir' in aria_label:
+                        continue  # Já curtido
+                    
+                    # Rolar até o botão
+                    await button.scroll_into_view_if_needed()
+                    await self.random_delay(1, 2)
+                    
+                    # Clicar no botão curtir
+                    await button.click()
+                    await self.random_delay(2, 4)
+                    
+                    likes_given += 1
+                    self.automation_stats['likes_given'] += 1
+                    self.automation_stats['feed_interactions'] += 1
+                    
+                    results.append({
+                        'action': 'like',
+                        'success': True,
+                        'post_index': i
+                    })
+                    
+                    logger.info(f"Post {i+1} curtido com sucesso")
+                    
+                except Exception as e:
+                    logger.error(f"Erro ao curtir post {i}: {e}")
+                    self.automation_stats['errors'] += 1
+                    results.append({
+                        'action': 'like',
+                        'success': False,
+                        'error': str(e),
+                        'post_index': i
+                    })
+                    continue
+            
+            self.automation_stats['last_activity'] = datetime.now().isoformat()
+            
+            return {
+                'success': True,
+                'message': f'{likes_given} posts curtidos com sucesso',
+                'likes_given': likes_given,
+                'results': results
+            }
+            
+        except Exception as e:
+            logger.error(f"Erro na automação de curtidas: {e}")
+            return {
+                'success': False,
+                'error': f'Erro na automação de curtidas: {str(e)}'
+            }
+    
+    async def comment_on_posts(self, max_comments=5, comment_templates=None):
+        """Comenta em posts do feed"""
+        try:
+            if not self.is_logged_in:
+                return {'success': False, 'error': 'not_logged_in'}
+            
+            if not comment_templates:
+                comment_templates = [
+                    "Excelente conteúdo! 👏",
+                    "Muito interessante, obrigado por compartilhar!",
+                    "Concordo totalmente com sua visão.",
+                    "Ótima reflexão! 💡",
+                    "Parabéns pelo post inspirador!"
+                ]
+            
+            # Navegar para o feed
+            if not await self.navigate_to_feed():
+                return {'success': False, 'error': 'failed_to_load_feed'}
+            
+            # Encontrar botões de comentar
+            comment_buttons = await self.page.locator('button[aria-label*="Comentar"]').all()
+            
+            comments_posted = 0
+            results = []
+            
+            for i, button in enumerate(comment_buttons[:max_comments]):
+                try:
+                    # Rolar até o botão
+                    await button.scroll_into_view_if_needed()
+                    await self.random_delay(1, 2)
+                    
+                    # Clicar no botão comentar
+                    await button.click()
+                    await self.random_delay(2, 3)
+                    
+                    # Encontrar campo de comentário
+                    comment_field = await self.page.locator('div[contenteditable="true"][data-placeholder*="comentário"]').first
+                    
+                    if await comment_field.count() > 0:
+                        # Escolher comentário aleatório
+                        comment_text = random.choice(comment_templates)
+                        
+                        # Digitar comentário
+                        await comment_field.fill(comment_text)
+                        await self.random_delay(1, 2)
+                        
+                        # Encontrar e clicar no botão publicar
+                        publish_button = await self.page.locator('button:has-text("Publicar")').first
+                        
+                        if await publish_button.count() > 0:
+                            await publish_button.click()
+                            await self.random_delay(3, 5)
+                            
+                            comments_posted += 1
+                            self.automation_stats['comments_posted'] += 1
+                            self.automation_stats['feed_interactions'] += 1
+                            
+                            results.append({
+                                'action': 'comment',
+                                'success': True,
+                                'post_index': i,
+                                'comment': comment_text
+                            })
+                            
+                            logger.info(f"Comentário postado no post {i+1}: {comment_text}")
+                        else:
+                            results.append({
+                                'action': 'comment',
+                                'success': False,
+                                'error': 'Botão publicar não encontrado',
+                                'post_index': i
+                            })
+                    else:
+                        results.append({
+                            'action': 'comment',
+                            'success': False,
+                            'error': 'Campo de comentário não encontrado',
+                            'post_index': i
+                        })
+                    
+                except Exception as e:
+                    logger.error(f"Erro ao comentar post {i}: {e}")
+                    self.automation_stats['errors'] += 1
+                    results.append({
+                        'action': 'comment',
+                        'success': False,
+                        'error': str(e),
+                        'post_index': i
+                    })
+                    continue
+            
+            self.automation_stats['last_activity'] = datetime.now().isoformat()
+            
+            return {
+                'success': True,
+                'message': f'{comments_posted} comentários postados com sucesso',
+                'comments_posted': comments_posted,
+                'results': results
+            }
+            
+        except Exception as e:
+            logger.error(f"Erro na automação de comentários: {e}")
+            return {
+                'success': False,
+                'error': f'Erro na automação de comentários: {str(e)}'
+            }
+    
+    async def interact_with_feed(self, max_interactions=15, like_probability=0.7, comment_probability=0.3):
+        """Interage com o feed (curtidas e comentários combinados)"""
+        try:
+            if not self.is_logged_in:
+                return {'success': False, 'error': 'not_logged_in'}
+            
+            # Navegar para o feed
+            if not await self.navigate_to_feed():
+                return {'success': False, 'error': 'failed_to_load_feed'}
+            
+            # Encontrar posts no feed
+            posts = await self.page.locator('[data-id]').all()
+            
+            interactions = 0
+            results = []
+            
+            comment_templates = [
+                "Excelente conteúdo! 👏",
+                "Muito interessante, obrigado por compartilhar!",
+                "Concordo totalmente com sua visão.",
+                "Ótima reflexão! 💡",
+                "Parabéns pelo post inspirador!",
+                "Muito útil, obrigado!",
+                "Perspectiva interessante! 🤔",
+                "Conteúdo de qualidade!"
+            ]
+            
+            for i, post in enumerate(posts[:max_interactions]):
+                try:
+                    # Rolar até o post
+                    await post.scroll_into_view_if_needed()
+                    await self.random_delay(2, 4)
+                    
+                    # Decidir ação baseada na probabilidade
+                    action_rand = random.random()
+                    
+                    if action_rand < like_probability:
+                        # Tentar curtir
+                        like_button = await post.locator('button[aria-label*="Curtir"]').first
+                        
+                        if await like_button.count() > 0:
+                            aria_label = await like_button.get_attribute('aria-label')
+                            if 'Descurtir' not in aria_label:  # Não curtido ainda
+                                await like_button.click()
+                                await self.random_delay(1, 2)
+                                
+                                interactions += 1
+                                self.automation_stats['likes_given'] += 1
+                                self.automation_stats['feed_interactions'] += 1
+                                
+                                results.append({
+                                    'action': 'like',
+                                    'success': True,
+                                    'post_index': i
+                                })
+                                
+                                logger.info(f"Post {i+1} curtido")
+                    
+                    elif action_rand < (like_probability + comment_probability):
+                        # Tentar comentar
+                        comment_button = await post.locator('button[aria-label*="Comentar"]').first
+                        
+                        if await comment_button.count() > 0:
+                            await comment_button.click()
+                            await self.random_delay(2, 3)
+                            
+                            # Encontrar campo de comentário
+                            comment_field = await self.page.locator('div[contenteditable="true"][data-placeholder*="comentário"]').first
+                            
+                            if await comment_field.count() > 0:
+                                comment_text = random.choice(comment_templates)
+                                await comment_field.fill(comment_text)
+                                await self.random_delay(1, 2)
+                                
+                                # Publicar comentário
+                                publish_button = await self.page.locator('button:has-text("Publicar")').first
+                                
+                                if await publish_button.count() > 0:
+                                    await publish_button.click()
+                                    await self.random_delay(3, 5)
+                                    
+                                    interactions += 1
+                                    self.automation_stats['comments_posted'] += 1
+                                    self.automation_stats['feed_interactions'] += 1
+                                    
+                                    results.append({
+                                        'action': 'comment',
+                                        'success': True,
+                                        'post_index': i,
+                                        'comment': comment_text
+                                    })
+                                    
+                                    logger.info(f"Comentário postado no post {i+1}")
+                    
+                    # Delay entre posts
+                    await self.random_delay(3, 7)
+                    
+                except Exception as e:
+                    logger.error(f"Erro ao interagir com post {i}: {e}")
+                    self.automation_stats['errors'] += 1
+                    continue
+            
+            self.automation_stats['last_activity'] = datetime.now().isoformat()
+            
+            return {
+                'success': True,
+                'message': f'{interactions} interações realizadas no feed',
+                'total_interactions': interactions,
+                'results': results,
+                'stats': self.automation_stats
+            }
+            
+        except Exception as e:
+            logger.error(f"Erro na interação com feed: {e}")
+            return {
+                'success': False,
+                'error': f'Erro na interação com feed: {str(e)}'
             }
     
     async def search_people(self, keywords, max_results=25):
@@ -324,48 +648,63 @@ class LinkedInAutomationEngine:
             
             results = []
             
-            # Buscar pessoas
-            search_result = await self.search_people(keywords, max_actions)
+            if automation_type == 'feed_interactions':
+                # Nova funcionalidade: interagir com feed
+                return await self.interact_with_feed(max_actions)
             
-            if not search_result['success']:
-                return search_result
+            elif automation_type == 'feed_likes':
+                # Nova funcionalidade: curtir posts no feed
+                return await self.like_posts_in_feed(max_actions)
             
-            profiles = search_result['profiles']
+            elif automation_type == 'feed_comments':
+                # Nova funcionalidade: comentar posts no feed
+                comment_templates = automation_config.get('comment_templates', [])
+                return await self.comment_on_posts(max_actions, comment_templates)
             
-            # Executar ações baseadas no tipo
-            for i, profile in enumerate(profiles):
-                try:
-                    if automation_type == 'connection_requests':
-                        if profile['can_connect']:
-                            result = await self.send_connection_request(i, message)
+            else:
+                # Automações baseadas em busca (conexões, visualizações)
+                # Buscar pessoas
+                search_result = await self.search_people(keywords, max_actions)
+                
+                if not search_result['success']:
+                    return search_result
+                
+                profiles = search_result['profiles']
+                
+                # Executar ações baseadas no tipo
+                for i, profile in enumerate(profiles):
+                    try:
+                        if automation_type == 'connection_requests':
+                            if profile['can_connect']:
+                                result = await self.send_connection_request(i, message)
+                                results.append({
+                                    'profile': profile['name'],
+                                    'action': 'connection_request',
+                                    'result': result
+                                })
+                        
+                        elif automation_type == 'profile_views':
+                            result = await self.view_profile(i)
                             results.append({
                                 'profile': profile['name'],
-                                'action': 'connection_request',
+                                'action': 'profile_view',
                                 'result': result
                             })
-                    
-                    elif automation_type == 'profile_views':
-                        result = await self.view_profile(i)
-                        results.append({
-                            'profile': profile['name'],
-                            'action': 'profile_view',
-                            'result': result
-                        })
-                    
-                    # Delay entre ações
-                    await self.random_delay(3, 7)
-                    
-                except Exception as e:
-                    logger.error(f"Erro na ação {i}: {e}")
-                    self.automation_stats['errors'] += 1
-                    continue
-            
-            return {
-                'success': True,
-                'message': f'Automação concluída. {len(results)} ações executadas.',
-                'results': results,
-                'stats': self.automation_stats
-            }
+                        
+                        # Delay entre ações
+                        await self.random_delay(3, 7)
+                        
+                    except Exception as e:
+                        logger.error(f"Erro na ação {i}: {e}")
+                        self.automation_stats['errors'] += 1
+                        continue
+                
+                return {
+                    'success': True,
+                    'message': f'Automação concluída. {len(results)} ações executadas.',
+                    'results': results,
+                    'stats': self.automation_stats
+                }
             
         except Exception as e:
             logger.error(f"Erro na automação: {e}")
