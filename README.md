@@ -2,7 +2,34 @@
 
 Sistema profissional de automação LinkedIn com arquitetura limpa e modular.
 
-## 🚀 Início Rápido
+## � Estrutura do Projeto
+
+```
+/
+├── backend/                 # Backend principal
+│   ├── src/                # Código fonte Python
+│   │   ├── api/           # Endpoints da API
+│   │   ├── auth/         # Autenticação
+│   │   ├── config/       # Configurações
+│   │   ├── core/         # Lógica de negócio principal
+│   │   ├── database/     # Camada de banco de dados
+│   │   ├── linkedin/     # Integrações com LinkedIn
+│   │   ├── services/     # Serviços de aplicação
+│   │   └── utils/        # Utilitários
+│   ├── tests/             # Testes automatizados
+│   └── requirements.txt   # Dependências Python
+├── frontend/              # Frontend React
+│   ├── src/              # Código fonte React
+│   │   ├── components/   # Componentes React
+│   │   ├── pages/       # Páginas da aplicação
+│   │   └── services/    # Integrações com API
+│   └── package.json      # Dependências NPM
+└── deploy/               # Configurações de deploy
+    ├── scripts/         # Scripts de produção
+    └── nginx/           # Configurações Nginx
+```
+
+## �🚀 Início Rápido
 
 ### Requisitos
 - Python 3.12+
