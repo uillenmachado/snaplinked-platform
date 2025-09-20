@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
@@ -14,8 +12,13 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - snaplinked_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U snaplinked_user -d snaplinked"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # Redis for Celery and Caching
+  # Redis for Caching and Session
   redis:
     image: redis:7-alpine
     ports:
@@ -24,20 +27,26 @@ services:
       - redis_data:/data
     networks:
       - snaplinked_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Flask Backend API
   backend:
     build:
-      context: ./snaplinked-backend
+      context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "5001:5001"
     environment:
       - FLASK_ENV=development
+      - PORT=5001
       - DATABASE_URL=postgresql://snaplinked_user:snaplinked_password@postgres:5432/snaplinked
       - REDIS_URL=redis://redis:6379/0
     volumes:
-      - ./snaplinked-backend:/app
+      - ./backend:/app
     depends_on:
       - postgres
       - redis

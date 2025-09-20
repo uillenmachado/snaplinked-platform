@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.1-beta] - 2025-09-20
+
+### Adicionado
+- Nova estrutura de diretórios organizada
+- Sistema de blueprints para API modular
+- Configurações centralizadas para ambiente de desenvolvimento e produção
+- Frontend React com Vite e TailwindCSS
+- Sistema de autenticação aprimorado
+- Documentação completa em português
+
+### Alterado
+- Reorganização completa do código backend
+- Atualização da estrutura do frontend
+- Melhoria nas configurações do Docker
+- Otimização do Nginx para produção
+- Padronização de endpoints da API
+
+### Corrigido
+- Problemas de CORS
+- Gestão de sessões
+- Configurações de segurança
+- Performance do sistema de automação
+
+### Segurança
+- Implementação de rate limiting
+- Validações de entrada aprimoradas
+- Headers de segurança no Nginx
+- Sanitização de dados
+
+### Removido
+- Arquivos redundantes
+- Código não utilizado
+- Dependências desnecessárias
+
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),

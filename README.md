@@ -1,4 +1,116 @@
-# SnapLinked - Automação Inteligente para LinkedIn
+# SnapLinked Platform
+
+Sistema profissional de automação LinkedIn com arquitetura limpa e modular.
+
+## 🚀 Início Rápido
+
+### Requisitos
+- Python 3.12+
+- Node.js 20+
+- Docker e Docker Compose (opcional)
+- pnpm (gerenciador de pacotes para o frontend)
+
+### Configuração do Ambiente
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/uillenmachado/snaplinked-platform.git
+cd snaplinked-platform
+```
+
+2. Configure o backend:
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+pip install -r requirements.txt
+```
+
+3. Configure o frontend:
+```bash
+cd frontend
+pnpm install
+```
+
+4. Configure as variáveis de ambiente:
+- Backend: Copie `.env.example` para `.env` e ajuste as configurações
+- Frontend: Copie `.env.example` para `.env` e ajuste as configurações
+
+### Executando o Projeto
+
+#### Desenvolvimento Local
+
+1. Backend (em um terminal):
+```bash
+cd backend
+source venv/bin/activate
+python src/app.py
+```
+
+2. Frontend (em outro terminal):
+```bash
+cd frontend
+pnpm dev
+```
+
+#### Usando Docker
+
+```bash
+docker-compose up --build
+```
+
+O sistema estará disponível em:
+- Frontend: http://localhost:3000
+- API Backend: http://localhost:5001
+
+## Nova Estrutura do Repositório
+
+### Backend
+
+```
+├── src/                  # Código-fonte principal
+│   ├── api/             # Endpoints da API
+│   ├── auth/            # Autenticação e autorização
+│   ├── config/          # Configurações do sistema
+│   ├── core/            # Lógica de negócio central
+│   ├── database/        # Camada de acesso a dados
+│   ├── linkedin/        # Integração com LinkedIn
+│   ├── services/        # Serviços da aplicação
+│   └── utils/           # Utilitários e helpers
+├── tests/               # Testes automatizados
+│   ├── unit/           # Testes unitários
+│   └── integration/     # Testes de integração
+└── requirements.txt     # Dependências Python
+```
+
+### Frontend
+
+```
+├── src/                 # Código-fonte principal
+│   ├── components/      # Componentes React
+│   ├── contexts/        # Contexts da aplicação
+│   ├── hooks/          # Custom hooks
+│   ├── pages/          # Páginas da aplicação
+│   ├── services/       # Serviços e API
+│   └── utils/          # Utilitários
+├── public/             # Assets públicos
+└── package.json        # Dependências Node.js
+```
+
+### Deploy
+
+```
+├── docker/             # Configurações Docker
+├── nginx/             # Configurações NGINX
+└── scripts/           # Scripts de deploy
+```
+
+### Docs
+
+```
+├── pt/                # Documentação em Português
+└── en/               # Documentação em Inglês
+```
 
 O SnapLinked é um micro SaaS de automação para LinkedIn, projetado para ajudar profissionais de vendas, marketing e recrutamento a escalar seu networking de forma inteligente e segura. A plataforma automatiza tarefas repetitivas como envio de convites, mensagens personalizadas e visualização de perfis, permitindo que você foque em construir relacionamentos significativos.
 
