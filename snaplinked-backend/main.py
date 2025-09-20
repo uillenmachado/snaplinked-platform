@@ -20,6 +20,10 @@ load_dotenv()
 from config.settings import Config
 from linkedin_automation_engine import LinkedInAutomationEngine
 
+# Importar rotas
+from routes.feed_actions import feed_actions_bp
+from routes.simple_login import simple_login_bp
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -71,17 +75,24 @@ def create_app(config_name=None):
         password = data.get('password')
         
         if (email == 'demo@snaplinked.com' and password == 'demo123') or \
-           (email == 'test@example.com' and password == 'TestPassword123'):
+           (email == 'test@example.com' and password == 'TestPassword123') or \
+           (email == 'metodoivib2b@gmail.com' and password == 'Ivib2b2024'):
             token = jwt.encode({
                 'user_id': 1,
                 'email': email,
                 'exp': datetime.utcnow().timestamp() + 86400
             }, app.config['SECRET_KEY'], algorithm='HS256')
             
+            user_name = 'Test User'
+            if email == 'metodoivib2b@gmail.com':
+                user_name = 'Método IVIB2B'
+            elif email == 'demo@snaplinked.com':
+                user_name = 'Demo User'
+            
             return jsonify({
                 'success': True,
                 'tokens': {'access_token': token, 'refresh_token': token},
-                'user': {'id': 1, 'email': email, 'name': 'Test User', 'plan': 'Premium'}
+                'user': {'id': 1, 'email': email, 'name': user_name, 'plan': 'Premium'}
             })
         
         return jsonify({'success': False, 'message': 'Credenciais inválidas'}), 401
@@ -289,6 +300,10 @@ def create_app(config_name=None):
             return jsonify({'success': False, 'message': 'Endpoint não encontrado'}), 404
         return send_from_directory(app.static_folder, 'index.html')
 
+    # Registrar blueprints
+    app.register_blueprint(feed_actions_bp)
+    app.register_blueprint(simple_login_bp)
+
     @app.errorhandler(500)
     def internal_error(error):
         return jsonify({'error': 'Internal server error'}), 500
@@ -298,7 +313,7 @@ def create_app(config_name=None):
         return {
             'status': 'healthy',
             'service': 'SnapLinked API',
-            'version': '4.2.0',
+            'version': '4.3.0',
             'timestamp': datetime.utcnow().isoformat(),
             'features': {
                 'automation_engine': True,

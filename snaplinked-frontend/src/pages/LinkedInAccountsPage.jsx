@@ -106,17 +106,35 @@ const LinkedInAccountsPage = () => {
     try {
       setLoading(true);
       setError('');
+      setSuccess('');
       
-      const response = await api.post('/linkedin/manual-login', manualLoginForm);
+      // Usar a rota correta do simple login
+      const response = await fetch('/api/simple-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(manualLoginForm)
+      });
+
+      const data = await response.json();
       
-      if (response.data.success) {
+      if (data.success) {
         setSuccess('Login manual realizado com sucesso! Automações habilitadas.');
-        setProfile(response.data.profile);
+        setProfile({
+          name: 'Usuário LinkedIn',
+          email: manualLoginForm.email,
+          connectionType: 'manual',
+          automationEnabled: true,
+          lastSync: new Date().toISOString()
+        });
         setShowManualLogin(false);
         setManualLoginForm({ email: '', password: '' });
+      } else {
+        throw new Error(data.error || 'Falha no login');
       }
     } catch (error) {
-      const errorMsg = error.response?.data?.error || 'Erro no login manual';
+      const errorMsg = error.message || 'Erro no login manual';
       setError(errorMsg);
     } finally {
       setLoading(false);
@@ -144,14 +162,48 @@ const LinkedInAccountsPage = () => {
     try {
       setLoading(true);
       setError('');
+      setSuccess('');
       
-      const response = await api.get('/automations/stats');
+      // Testar status da conexão
+      const statusResponse = await fetch('/api/simple-status');
+      const statusData = await statusResponse.json();
       
-      if (response.data.success) {
-        setSuccess('Conexão testada com sucesso! Automações funcionando.');
+      if (!statusData.success || !statusData.logged_in) {
+        throw new Error('Não está conectado ao LinkedIn');
       }
-    } catch {
-      setError('Erro ao testar conexão');
+
+      // Testar automações básicas
+      const testResults = [];
+      
+      // Teste de curtidas
+      try {
+        const likeResponse = await fetch('/api/simple-like', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ max_likes: 1 })
+        });
+        const likeData = await likeResponse.json();
+        testResults.push(`Curtidas: ${likeData.success ? 'OK' : 'Falha'}`);
+      } catch {
+        testResults.push('Curtidas: Erro');
+      }
+
+      // Teste de comentários
+      try {
+        const commentResponse = await fetch('/api/simple-comment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ max_comments: 1, comment: 'Teste de automação' })
+        });
+        const commentData = await commentResponse.json();
+        testResults.push(`Comentários: ${commentData.success ? 'OK' : 'Falha'}`);
+      } catch {
+        testResults.push('Comentários: Erro');
+      }
+      
+      setSuccess(`Testes concluídos: ${testResults.join(', ')}`);
+    } catch (error) {
+      setError(error.message || 'Erro ao testar conexão');
     } finally {
       setLoading(false);
     }
