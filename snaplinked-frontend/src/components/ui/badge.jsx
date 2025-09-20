@@ -25,20 +25,24 @@ const badgeVariants = cva(
   }
 )
 
+// Refatorando para corrigir o aviso do ESLint relacionado ao Fast Refresh
 function Badge({
   className,
   variant,
   asChild = false,
   ...props
 }) {
-  const Comp = asChild ? Slot : "span"
+  const Comp = asChild ? Slot : "span";
 
   return (
     <Comp
       data-slot="badge"
       className={cn(badgeVariants({ variant }), className)}
-      {...props} />
+      {...props}
+    />
   );
 }
 
-export { Badge, badgeVariants }
+const BadgeComponent = React.memo(Badge);
+
+export { BadgeComponent as Badge, badgeVariants };

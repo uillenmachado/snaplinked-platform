@@ -5,7 +5,7 @@ import { ChevronDownIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-function NavigationMenu({
+const NavigationMenu = React.memo(function NavigationMenu({
   className,
   children,
   viewport = true,
@@ -24,7 +24,7 @@ function NavigationMenu({
       {viewport && <NavigationMenuViewport />}
     </NavigationMenuPrimitive.Root>
   );
-}
+});
 
 function NavigationMenuList({
   className,

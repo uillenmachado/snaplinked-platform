@@ -9,26 +9,51 @@ from flask_cors import CORS
 import jwt
 import datetime
 import json
+import os
 
 app = Flask(__name__)
-app.secret_key = 'demo-secret-key-snaplinked-2025'
+app.secret_key = os.environ['SECRET_KEY']  # Chave secreta obrigatória em produção
 CORS(app)
 
-# Dados de demonstração
-DEMO_USER = {
-    'id': 1,
-    'email': 'demo@snaplinked.com',
-    'password': 'demo123',
-    'name': 'Demo User',
-    'plan': 'Premium'
+# Planos de usuário
+USER_PLANS = {
+    'free': 'Gratuito',
+    'pro': 'Profissional',
+    'enterprise': 'Empresarial'
 }
 
-DEMO_STATS = {
-    'connections_sent': 1247,
-    'acceptance_rate': 73,
-    'messages_sent': 892,
-    'response_rate': 41
+# Configurações iniciais
+app_state = {
+    'linkedin_connected': False,
+    'automations': {
+        'connections': False,
+        'follow_up': False,
+        'profile_views': False
+    },
+    'activity_log': []
 }
+
+# Logger para produção
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+def validate_user_credentials(email, password):
+    """Valida as credenciais do usuário no banco de dados"""
+    try:
+        # Em produção, esta função deve validar as credenciais no banco de dados
+        from database import User
+        user = User.query.filter_by(email=email).first()
+        if user and user.check_password(password):
+            return {
+                'id': user.id,
+                'email': user.email,
+                'name': user.name,
+                'plan': user.plan
+            }
+    except Exception as e:
+        logger.error(f"Erro ao validar credenciais: {e}")
+    return None
 
 # Templates HTML inline para demonstração
 LOGIN_TEMPLATE = '''
@@ -343,11 +368,13 @@ def login():
         email = request.form['email']
         password = request.form['password']
         
-        if email == DEMO_USER['email'] and password == DEMO_USER['password']:
-            session['user'] = DEMO_USER
+        # Validação de usuário no banco de dados em produção
+        user = validate_user_credentials(email, password)
+        if user:
+            session['user'] = user
             app_state['activity_log'].append({
                 'timestamp': datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'message': f'Login realizado: {DEMO_USER["name"]}'
+                'message': f'Login realizado: {user["name"]}'
             })
             return redirect(url_for('dashboard'))
         else:
@@ -360,10 +387,18 @@ def dashboard():
     if 'user' not in session:
         return redirect(url_for('login'))
     
+    # Em produção, carregar estatísticas do banco de dados
+    user_stats = {
+        'connections_sent': 0,
+        'acceptance_rate': 0,
+        'messages_sent': 0,
+        'response_rate': 0
+    }
+    
     return render_template_string(
         DASHBOARD_TEMPLATE,
         user=session['user'],
-        stats=DEMO_STATS,
+        stats=user_stats,
         linkedin_connected=app_state['linkedin_connected'],
         automations=app_state['automations'],
         activity_log=app_state['activity_log'][-10:]  # Últimas 10 entradas
@@ -446,15 +481,20 @@ def clear_log():
 
 @app.route('/api/stats')
 def api_stats():
-    # Simular mudanças nas estatísticas
-    DEMO_STATS['connections_sent'] += 1
-    if DEMO_STATS['connections_sent'] % 5 == 0:
-        DEMO_STATS['messages_sent'] += 1
-    
-    return jsonify({
-        'success': True,
-        'stats': DEMO_STATS
-    })
+    # Em produção, carregar estatísticas reais do banco de dados
+    try:
+        from database import UserStats
+        stats = UserStats.get_user_stats(session.get('user', {}).get('id'))
+        return jsonify({
+            'success': True,
+            'stats': stats
+        })
+    except Exception as e:
+        logger.error(f"Erro ao carregar estatísticas: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Erro ao carregar estatísticas'
+        }), 500
 
 @app.route('/api/auth/login', methods=['POST'])
 def api_login():
@@ -462,17 +502,18 @@ def api_login():
     email = data.get('email')
     password = data.get('password')
     
-    if email == DEMO_USER['email'] and password == DEMO_USER['password']:
+    user = validate_user_credentials(email, password)
+    if user:
         token = jwt.encode({
-            'user_id': DEMO_USER['id'],
-            'email': DEMO_USER['email'],
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=24)
+            'user_id': user['id'],
+            'email': user['email'],
+            'exp': datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=24)
         }, app.secret_key, algorithm='HS256')
         
         return jsonify({
             'success': True,
             'token': token,
-            'user': DEMO_USER
+            'user': user
         })
     else:
         return jsonify({

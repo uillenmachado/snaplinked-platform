@@ -35,6 +35,7 @@ const buttonVariants = cva(
   }
 )
 
+// Refatorando para corrigir o aviso do ESLint relacionado ao Fast Refresh
 function Button({
   className,
   variant,
@@ -42,14 +43,17 @@ function Button({
   asChild = false,
   ...props
 }) {
-  const Comp = asChild ? Slot : "button"
+  const Comp = asChild ? Slot : "button";
 
   return (
     <Comp
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
-      {...props} />
+      {...props}
+    />
   );
 }
 
-export { Button, buttonVariants }
+const ButtonComponent = React.memo(Button);
+
+export { ButtonComponent as Button, buttonVariants }

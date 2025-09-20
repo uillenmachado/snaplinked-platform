@@ -60,15 +60,33 @@ Follow the steps below to set up and run the project in your local environment.
     cp .env.example .env
     ```
 
-2.  **Fill in the environment variables in the `.env` file with your credentials:**
+2.  **Fill in the environment variables in the `.env` file with your production credentials:**
 
     ```
-    # LinkedIn test credentials
-    LINKEDIN_TEST_EMAIL=your-email@example.com
-    LINKEDIN_TEST_PASSWORD=your-password
+    # LinkedIn Credentials
+    LINKEDIN_CLIENT_ID=your-client-id
+    LINKEDIN_CLIENT_SECRET=your-client-secret
+    LINKEDIN_REDIRECT_URI=https://snaplinked.com/auth/linkedin/callback
 
-    # Other settings...
+    # Other configurations...
     ```
+
+### Additional Configuration
+
+1. **Secret Key**:
+   - Make sure to define the `SECRET_KEY` environment variable for added security.
+   - Example configuration in the `.env` file:
+     ```
+     SECRET_KEY=your-secure-secret-key
+     ```
+
+2. **OAuth Configuration for LinkedIn**:
+   - Fill in the following variables in the `.env` file:
+     ```
+     LINKEDIN_CLIENT_ID=your-client-id
+     LINKEDIN_CLIENT_SECRET=your-client-secret
+     LINKEDIN_REDIRECT_URI=http://localhost:5000/callback
+     ```
 
 ### Running the Application
 
@@ -89,6 +107,15 @@ Follow the steps below to set up and run the project in your local environment.
 3.  **Access the application in your browser:**
 
     [http://localhost:3000](http://localhost:3000)
+
+### Running Automated Tests
+
+1. **Backend Tests**:
+   - To run all automated tests, use the command:
+     ```bash
+     cd snaplinked-backend
+     pytest tests
+     ```
 
 ## 🐳 Deploy with Docker
 

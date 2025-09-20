@@ -9,7 +9,7 @@ const Form = FormProvider
 
 const FormFieldContext = React.createContext({})
 
-const FormField = (
+const FormField = React.memo((
   {
     ...props
   }
@@ -19,7 +19,7 @@ const FormField = (
       <Controller {...props} />
     </FormFieldContext.Provider>
   );
-}
+})
 
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext)
@@ -46,7 +46,7 @@ const useFormField = () => {
 
 const FormItemContext = React.createContext({})
 
-function FormItem({
+const FormItem = React.memo(function FormItem({
   className,
   ...props
 }) {
@@ -57,7 +57,7 @@ function FormItem({
       <div data-slot="form-item" className={cn("grid gap-2", className)} {...props} />
     </FormItemContext.Provider>
   );
-}
+})
 
 function FormLabel({
   className,

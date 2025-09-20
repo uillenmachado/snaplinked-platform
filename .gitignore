@@ -85,3 +85,5 @@ coverage/
 # Temporary files
 tmp/
 temp/
+.coverage
+.pytest_cache/
