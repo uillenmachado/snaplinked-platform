@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: snaplinked
+      POSTGRES_USER: snaplinked_user
+      POSTGRES_PASSWORD: snaplinked_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - snaplinked_network
+
+  # Redis for Celery and Caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - snaplinked_network
+
+  # Flask Backend API
+  backend:
+    build:
+      context: ./snaplinked-backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://snaplinked_user:snaplinked_password@postgres:5432/snaplinked
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - ./snaplinked-backend:/app
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - snaplinked_network
+    command: python src/main.py
+
+  # Celery Worker for Background Tasks
+  celery_worker:
+    build:
+      context: ./snaplinked-backend
+      dockerfile: Dockerfile
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_URL=postgresql://snaplinked_user:snaplinked_password@postgres:5432/snaplinked
+    volumes:
+      - ./snaplinked-backend:/app
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - snaplinked_network
+    command: celery -A src.celery_app worker --loglevel=info
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./snaplinked-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./snaplinked-frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    networks:
+      - snaplinked_network
+    command: pnpm run dev --host
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  snaplinked_network:
+    driver: bridge
