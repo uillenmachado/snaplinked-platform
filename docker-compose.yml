@@ -1,0 +1,53 @@
+# SnapLinked v3.0 - Docker Compose
+version: '3.8'
+
+services:
+  snaplinked:
+    build: .
+    container_name: snaplinked-app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=false
+      - SECRET_KEY=${SECRET_KEY:-your-super-secret-key-change-in-production}
+      - DATABASE_URL=sqlite:///instance/snaplinked.db
+      - LINKEDIN_CLIENT_ID=${LINKEDIN_CLIENT_ID}
+      - LINKEDIN_CLIENT_SECRET=${LINKEDIN_CLIENT_SECRET}
+      - LINKEDIN_REDIRECT_URI=http://localhost:5000/auth/linkedin/callback
+    volumes:
+      - snaplinked_data:/home/snaplinked/instance
+      - snaplinked_logs:/home/snaplinked/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nginx para produção (opcional)
+  nginx:
+    image: nginx:alpine
+    container_name: snaplinked-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - snaplinked
+    restart: unless-stopped
+    profiles:
+      - production
+
+volumes:
+  snaplinked_data:
+    driver: local
+  snaplinked_logs:
+    driver: local
+
+networks:
+  default:
+    name: snaplinked-network

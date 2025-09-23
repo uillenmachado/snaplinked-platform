@@ -58,3 +58,73 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# SnapLinked v3.0 - Configurações específicas
+
+# Banco de dados
+*.db
+*.sqlite
+*.sqlite3
+backend/instance/
+backend/snaplinked.db
+
+# Ambiente virtual Python
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+backend/venv/
+
+# Playwright
+backend/test-results/
+backend/playwright-report/
+backend/playwright/.cache/
+
+# Certificados e chaves
+*.pem
+*.key
+*.crt
+*.p12
+ssl/
+certs/
+
+# Backups
+backups/
+*.backup
+*.bak
+
+# Relatórios de segurança
+bandit-report.json
+safety-report.json
+trivy-results.sarif
+
+# Arquivos de configuração local
+config.local.py
+settings.local.py
+
+# Uploads de usuário
+uploads/
+media/
+static/uploads/
+
+# Arquivos de sessão
+flask_session/
+
+# Arquivos específicos do projeto
+user_data/
+automation_logs/
+linkedin_cache/
+
+# Coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Arquivos de deploy local
+deploy.local.sh
+docker-compose.override.yml
+
+# Secrets
+secrets/
+.secrets/
