@@ -7,15 +7,9 @@
     "start": "cd backend && python app.py",
     "dev": "cd backend && FLASK_ENV=development python app.py",
     "test": "cd backend && python run_tests.py",
-    "test:watch": "cd backend && python run_tests.py --watch",
-    "lint": "cd backend && pylint *.py",
-    "format": "cd backend && black .",
-    "security": "cd backend && bandit -r .",
     "build": "docker build -t snaplinked:latest .",
-    "deploy:dev": "./deploy.sh",
-    "deploy:prod": "./deploy.sh",
-    "backup": "cd backend && python init_db.py backup",
-    "init:db": "cd backend && python init_db.py init"
+    "deploy": "./deploy.sh",
+    "init": "cd backend && python init_db.py init"
   },
   "repository": {
     "type": "git",
@@ -25,58 +19,16 @@
     "linkedin",
     "automation",
     "marketing",
-    "networking",
-    "social-media",
     "python",
     "flask",
-    "playwright",
-    "oauth",
-    "jwt",
-    "sqlalchemy"
+    "playwright"
   ],
   "author": {
     "name": "SnapLinked Team",
-    "email": "contato@snaplinked.com",
-    "url": "https://snaplinked.com"
+    "email": "contato@snaplinked.com"
   },
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/uillenmachado/snaplinked-platform/issues"
-  },
-  "homepage": "https://github.com/uillenmachado/snaplinked-platform#readme",
   "engines": {
-    "python": ">=3.8",
-    "node": ">=16"
-  },
-  "os": [
-    "linux",
-    "darwin",
-    "win32"
-  ],
-  "cpu": [
-    "x64",
-    "arm64"
-  ],
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/uillenmachado"
-  },
-  "config": {
-    "python_version": "3.11",
-    "flask_version": "3.0.3",
-    "playwright_version": "1.48.0"
-  },
-  "directories": {
-    "lib": "backend",
-    "test": "backend/tests",
-    "doc": "docs"
-  },
-  "files": [
-    "backend/",
-    "README.md",
-    "LICENSE",
-    "CHANGELOG.md",
-    "API.md",
-    "INSTALL.md"
-  ]
+    "python": ">=3.8"
+  }
 }

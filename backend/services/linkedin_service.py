@@ -713,3 +713,6 @@ class LinkedInAutomationService:
 # Instâncias globais dos serviços
 oauth_service = LinkedInOAuthService()
 automation_service = LinkedInAutomationService()
+
+# Alias para compatibilidade
+LinkedInService = LinkedInAutomationService
