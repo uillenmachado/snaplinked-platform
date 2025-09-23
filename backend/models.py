@@ -127,7 +127,7 @@ class AutomationLog(db.Model):
     target_name = db.Column(db.String(200), nullable=True)  # Nome da pessoa/empresa
     status = db.Column(db.String(20), nullable=False)  # 'success', 'failed', 'skipped'
     message = db.Column(db.Text, nullable=True)  # Mensagem de erro ou sucesso
-    metadata = db.Column(db.JSON, nullable=True)  # Dados adicionais em JSON
+    extra_data = db.Column(db.JSON, nullable=True)  # Dados adicionais em JSON
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), nullable=False)
     
     def __repr__(self):
@@ -144,7 +144,7 @@ class AutomationLog(db.Model):
             'target_name': self.target_name,
             'status': self.status,
             'message': self.message,
-            'metadata': self.metadata,
+            'extra_data': self.extra_data,
             'created_at': self.created_at.isoformat() if self.created_at else None
         }
 
