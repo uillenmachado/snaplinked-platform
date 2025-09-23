@@ -31,7 +31,7 @@ class Config:
     # Configurações da aplicação
     DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
     HOST = os.environ.get('FLASK_HOST', '127.0.0.1')
-    PORT = int(os.environ.get('FLASK_PORT', 5000))
+    PORT = int(os.environ.get('FLASK_PORT', 5001))
     
     # Configurações de automação
     AUTOMATION_DELAY = int(os.environ.get('AUTOMATION_DELAY', 2))  # segundos entre ações
