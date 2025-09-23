@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapLinked v3.0 - Automação Profissional LinkedIn</title>
+    <meta name="description" content="Plataforma completa de automação LinkedIn com funcionalidades reais e seguras">
+    <meta name="keywords" content="linkedin, automação, marketing, networking, profissional">
+    <meta name="author" content="SnapLinked">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    
+    <!-- Preload recursos críticos -->
+    <link rel="preload" href="/static/js/main.js" as="script">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo">🚀 SnapLinked</div>
+            <div class="version">v3.0</div>
+            <div class="status" id="connectionStatus">
+                🔴 Desconectado
+            </div>
+        </div>
+        <div class="header-buttons">
+            <button class="btn btn-open" id="openLinkedInBtn">
+                🌐 Abrir LinkedIn
+            </button>
+        </div>
+    </header>
+    
+    <!-- Conteúdo Principal -->
+    <main class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <h3>Painel de Controle</h3>
+            
+            <!-- Loading Message (oculto por padrão) -->
+            <div id="loadingMessage" class="alert alert-info" style="display: none;">
+                <div class="loading"></div> Carregando...
+            </div>
+            
+            <!-- Card de Autenticação -->
+            <section class="auth-card">
+                <h4>🔐 Conectar LinkedIn</h4>
+                <p>Escolha uma opção para conectar sua conta:</p>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <button id="oauthBtn" class="btn btn-oauth">
+                        <span>🔗</span> OAuth LinkedIn
+                    </button>
+                    <button id="manualBtn" class="btn btn-manual">
+                        <span>🖱️</span> Login Manual
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Card de Estatísticas -->
+            <section class="stats-card">
+                <h4>📊 Estatísticas</h4>
+                <div class="stat-row">
+                    <span class="stat-label">👍 Curtidas:</span>
+                    <span id="likesCount" class="stat-value stat-likes">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🤝 Conexões:</span>
+                    <span id="connectionsCount" class="stat-value stat-connections">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">💬 Comentários:</span>
+                    <span id="commentsCount" class="stat-value stat-comments">0</span>
+                </div>
+                <div style="margin-top: 16px;">
+                    <button id="resetStatsBtn" class="btn" style="width: 100%; background: #6c757d; color: white;">
+                        🔄 Resetar Estatísticas
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Botões de Automação -->
+            <section>
+                <h4 style="margin-bottom: 16px; color: #495057;">🤖 Automações</h4>
+                <div class="automation-buttons">
+                    <button class="btn-automation btn-like" id="likeBtn" disabled>
+                        <span>👍</span>
+                        <span>Curtir 3 Posts</span>
+                    </button>
+                    <button class="btn-automation btn-connect-action" id="connectBtn" disabled>
+                        <span>🤝</span>
+                        <span>Enviar 2 Conexões</span>
+                    </button>
+                    <button class="btn-automation btn-comment" id="commentBtn" disabled>
+                        <span>💬</span>
+                        <span>Comentar 1 Post</span>
+                    </button>
+                </div>
+            </section>
+        </aside>
+        
+        <!-- Área do Navegador -->
+        <section class="browser-area">
+            <!-- Barra de Navegação -->
+            <nav class="nav-bar">
+                <button class="nav-btn" id="backBtn" title="Voltar">◀️</button>
+                <button class="nav-btn" id="forwardBtn" title="Avançar">▶️</button>
+                <button class="nav-btn" id="refreshBtn" title="Atualizar">🔄</button>
+                <input class="url-bar" id="urlBar" type="text" 
+                       value="https://www.linkedin.com/feed/" readonly 
+                       aria-label="Barra de URL">
+                <button class="btn btn-open" id="goBtn">Ir</button>
+            </nav>
+            
+            <!-- Container do iFrame -->
+            <div class="iframe-container">
+                <!-- Placeholder -->
+                <div class="iframe-placeholder" id="iframePlaceholder">
+                    <h3>🔗 LinkedIn Integration</h3>
+                    <p>Conecte-se ao LinkedIn para começar a usar as automações. A interface do LinkedIn aparecerá aqui após a conexão.</p>
+                    <p><strong>Novidades v3.0:</strong></p>
+                    <ul style="text-align: left; margin: 16px 0;">
+                        <li>✅ Automação real com Playwright</li>
+                        <li>✅ Autenticação OAuth segura</li>
+                        <li>✅ Persistência de dados</li>
+                        <li>✅ Interface otimizada</li>
+                    </ul>
+                    <button class="btn btn-oauth" onclick="window.snapLinkedApp?.startOAuthLogin()">
+                        Conectar Agora
+                    </button>
+                </div>
+                
+                <!-- iFrame do LinkedIn -->
+                <iframe 
+                    id="linkedinFrame" 
+                    class="linkedin-frame"
+                    src=""
+                    style="display: none;"
+                    title="LinkedIn Interface"
+                    sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation">
+                </iframe>
+                
+                <!-- Overlay de Automação -->
+                <div id="automationOverlay" class="automation-overlay">
+                    <div class="overlay-content">
+                        <div id="automationIcon" class="automation-icon">🤖</div>
+                        <div id="automationMessage" class="automation-message">Executando automação...</div>
+                        <div id="automationDetail" class="automation-detail">Processando ações no LinkedIn...</div>
+                        <div class="progress-container">
+                            <div id="progressBar" class="progress-bar"></div>
+                        </div>
+                        <div id="progressText" class="progress-text">0% concluído</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="/static/js/main.js"></script>
+    
+    <!-- Service Worker para cache (opcional) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // navigator.serviceWorker.register('/sw.js')
+                //     .then(registration => console.log('SW registered'))
+                //     .catch(error => console.log('SW registration failed'));
+            });
+        }
+    </script>
+</body>
+</html>
