@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SnapLinked v2.0 - Automação Profissional LinkedIn</title>
+    <meta name="description" content="Plataforma completa de automação LinkedIn com interface visual integrada">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            position: relative;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .version {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .status.connected {
+            background: rgba(76, 175, 80, 0.3);
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-connect {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .btn-open {
+            background: #0066cc;
+            color: white;
+        }
+        
+        .main-content {
+            display: flex;
+            height: calc(100vh - 72px);
+        }
+        
+        .sidebar {
+            width: 320px;
+            background: white;
+            border-right: 1px solid #e1e5e9;
+            padding: 24px;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.05);
+        }
+        
+        .sidebar h3 {
+            margin: 0 0 24px 0;
+            color: #2c3e50;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid #e1e5e9;
+        }
+        
+        .stats-card h4 {
+            margin: 0 0 16px 0;
+            color: #495057;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 0;
+        }
+        
+        .stat-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .stat-likes { color: #28a745; }
+        .stat-connections { color: #007bff; }
+        .stat-comments { color: #fd7e14; }
+        
+        .automation-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn-automation {
+            padding: 16px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-automation:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-automation:hover:before {
+            left: 100%;
+        }
+        
+        .btn-automation:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+        
+        .btn-automation:disabled:before {
+            display: none;
+        }
+        
+        .btn-like { 
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .btn-connect-action { 
+            background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .btn-comment { 
+            background: linear-gradient(135deg, #fd7e14 0%, #e83e8c 100%);
+            box-shadow: 0 4px 15px rgba(253, 126, 20, 0.3);
+        }
+        
+        .browser-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+        
+        .nav-bar {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e1e5e9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-btn {
+            background: white;
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-btn:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+        
+        .url-bar {
+            flex: 1;
+            padding: 10px 16px;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            font-size: 14px;
+            background: white;
+            color: #495057;
+        }
+        
+        .iframe-container {
+            flex: 1;
+            position: relative;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .linkedin-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+        
+        .iframe-placeholder {
+            text-align: center;
+            color: #6c757d;
+            max-width: 400px;
+        }
+        
+        .iframe-placeholder h3 {
+            margin-bottom: 16px;
+            color: #495057;
+        }
+        
+        .iframe-placeholder p {
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        
+        .automation-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 123, 255, 0.95);
+            color: white;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        
+        .overlay-content {
+            text-align: center;
+            max-width: 500px;
+            padding: 40px;
+        }
+        
+        .automation-icon {
+            font-size: 72px;
+            margin-bottom: 24px;
+            animation: bounce 1.5s infinite;
+        }
+        
+        .automation-message {
+            font-weight: 700;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        
+        .automation-detail {
+            opacity: 0.9;
+            margin-bottom: 32px;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .progress-container {
+            width: 100%;
+            max-width: 400px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #20c997);
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            font-size: 14px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-12px); }
+            60% { transform: translateY(-6px); }
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 300px;
+            }
+            
+            .header {
+                padding: 12px 16px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">🚀 SnapLinked</div>
+            <div class="version">v2.0</div>
+            <div class="status" id="connectionStatus">
+                🔴 Desconectado
+            </div>
+        </div>
+        <div class="header-buttons">
+            <button class="btn btn-connect" onclick="connectLinkedIn()">
+                🔗 Conectar LinkedIn
+            </button>
+            <button class="btn btn-open" onclick="openLinkedIn()">
+                🌐 Abrir LinkedIn
+            </button>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="sidebar">
+            <h3>Controles de Automação</h3>
+            
+            <div class="stats-card">
+                <h4>📊 Estatísticas</h4>
+                <div class="stat-row">
+                    <span class="stat-label">👍 Curtidas:</span>
+                    <span id="likesCount" class="stat-value stat-likes">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🤝 Conexões:</span>
+                    <span id="connectionsCount" class="stat-value stat-connections">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">💬 Comentários:</span>
+                    <span id="commentsCount" class="stat-value stat-comments">0</span>
+                </div>
+            </div>
+            
+            <div class="automation-buttons">
+                <button class="btn-automation btn-like" id="likeBtn" onclick="executeAutomation('like')" disabled>
+                    <span>👍</span>
+                    <span>Curtir 3 Posts</span>
+                </button>
+                <button class="btn-automation btn-connect-action" id="connectBtn" onclick="executeAutomation('connect')" disabled>
+                    <span>🤝</span>
+                    <span>Enviar 2 Conexões</span>
+                </button>
+                <button class="btn-automation btn-comment" id="commentBtn" onclick="executeAutomation('comment')" disabled>
+                    <span>💬</span>
+                    <span>Comentar 1 Post</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="browser-area">
+            <div class="nav-bar">
+                <button class="nav-btn" onclick="navigateBack()">◀️</button>
+                <button class="nav-btn" onclick="navigateForward()">▶️</button>
+                <button class="nav-btn" onclick="refreshPage()">🔄</button>
+                <input class="url-bar" id="urlBar" type="text" value="https://www.linkedin.com/feed/" readonly>
+                <button class="btn btn-open" onclick="openLinkedIn()">Ir</button>
+            </div>
+            
+            <div class="iframe-container">
+                <div class="iframe-placeholder" id="iframePlaceholder">
+                    <h3>🔗 LinkedIn Integration</h3>
+                    <p>Conecte-se ao LinkedIn para começar a usar as automações. A interface do LinkedIn aparecerá aqui após a conexão.</p>
+                    <button class="btn btn-connect" onclick="connectLinkedIn()">
+                        Conectar Agora
+                    </button>
+                </div>
+                
+                <iframe 
+                    id="linkedinFrame" 
+                    class="linkedin-frame"
+                    src=""
+                    style="display: none;">
+                </iframe>
+                
+                <div id="automationOverlay" class="automation-overlay">
+                    <div class="overlay-content">
+                        <div id="automationIcon" class="automation-icon">🤖</div>
+                        <div id="automationMessage" class="automation-message">Executando automação...</div>
+                        <div id="automationDetail" class="automation-detail">Processando ações no LinkedIn...</div>
+                        <div class="progress-container">
+                            <div id="progressBar" class="progress-bar"></div>
+                        </div>
+                        <div id="progressText" class="progress-text">0% concluído</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Estado global da aplicação
+        let linkedinConnected = false;
+        let automationRunning = false;
+        let stats = { likes: 0, connections: 0, comments: 0 };
+
+        // Elementos DOM
+        const statusEl = document.getElementById('connectionStatus');
+        const buttons = ['likeBtn', 'connectBtn', 'commentBtn'];
+        const iframe = document.getElementById('linkedinFrame');
+        const placeholder = document.getElementById('iframePlaceholder');
+
+        // Conectar LinkedIn
+        async function connectLinkedIn() {
+            console.log('🔗 Conectando ao LinkedIn...');
+            
+            statusEl.innerHTML = '🟡 Conectando...';
+            statusEl.classList.remove('connected');
+            
+            try {
+                const response = await fetch('/api/connect-linkedin', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    linkedinConnected = true;
+                    statusEl.innerHTML = '🟢 Conectado';
+                    statusEl.classList.add('connected');
+                    
+                    // Habilitar botões de automação
+                    buttons.forEach(id => {
+                        const btn = document.getElementById(id);
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.style.opacity = '1';
+                        }
+                    });
+                    
+                    // Mostrar iframe do LinkedIn
+                    if (iframe && placeholder) {
+                        placeholder.style.display = 'none';
+                        iframe.style.display = 'block';
+                        iframe.src = 'https://www.linkedin.com/feed/';
+                    }
+                    
+                    console.log('✅ LinkedIn conectado com sucesso!');
+                } else {
+                    throw new Error(data.message);
+                }
+            } catch (error) {
+                console.error('❌ Erro ao conectar:', error);
+                statusEl.innerHTML = '🔴 Erro na conexão';
+                statusEl.classList.remove('connected');
+            }
+        }
+
+        // Abrir LinkedIn
+        function openLinkedIn() {
+            console.log('🌐 Abrindo LinkedIn...');
+            if (iframe) {
+                iframe.src = 'https://www.linkedin.com/feed/';
+                if (linkedinConnected) {
+                    placeholder.style.display = 'none';
+                    iframe.style.display = 'block';
+                }
+            }
+        }
+
+        // Navegação
+        function navigateBack() {
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.history.back();
+            }
+        }
+
+        function navigateForward() {
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.history.forward();
+            }
+        }
+
+        function refreshPage() {
+            if (iframe && iframe.src) {
+                iframe.src = iframe.src;
+            }
+        }
+
+        // Executar automação
+        async function executeAutomation(type) {
+            if (!linkedinConnected) {
+                alert('❌ Conecte-se ao LinkedIn primeiro!');
+                return;
+            }
+            
+            if (automationRunning) {
+                alert('⚠️ Automação já em execução! Aguarde a conclusão.');
+                return;
+            }
+            
+            console.log('🤖 Executando automação:', type);
+            
+            automationRunning = true;
+            
+            const overlay = document.getElementById('automationOverlay');
+            const message = document.getElementById('automationMessage');
+            const detail = document.getElementById('automationDetail');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const icon = document.getElementById('automationIcon');
+            
+            const actions = {
+                'like': { 
+                    name: 'Curtindo posts', 
+                    count: 3, 
+                    emoji: '👍',
+                    statKey: 'likes',
+                    counterId: 'likesCount',
+                    color: '#28a745'
+                },
+                'connect': { 
+                    name: 'Enviando conexões', 
+                    count: 2, 
+                    emoji: '🤝',
+                    statKey: 'connections',
+                    counterId: 'connectionsCount',
+                    color: '#007bff'
+                },
+                'comment': { 
+                    name: 'Comentando posts', 
+                    count: 1, 
+                    emoji: '💬',
+                    statKey: 'comments',
+                    counterId: 'commentsCount',
+                    color: '#fd7e14'
+                }
+            };
+            
+            const actionData = actions[type];
+            let progress = 0;
+            
+            // Mostrar overlay
+            if (overlay) {
+                overlay.style.display = 'flex';
+                overlay.style.background = `rgba(${actionData.color === '#28a745' ? '40, 167, 69' : actionData.color === '#007bff' ? '0, 123, 255' : '253, 126, 20'}, 0.95)`;
+            }
+            
+            // Configurar mensagens iniciais
+            if (icon) icon.textContent = actionData.emoji;
+            if (message) message.textContent = actionData.emoji + ' ' + actionData.name;
+            if (detail) detail.textContent = 'Iniciando automação...';
+            
+            // Simular automação realística
+            const interval = setInterval(() => {
+                progress += 8;
+                
+                // Atualizar barra de progresso
+                if (progressBar) progressBar.style.width = progress + '%';
+                if (progressText) progressText.textContent = progress + '% concluído';
+                
+                // Mensagens de progresso
+                if (progress === 24 && detail) detail.textContent = 'Analisando conteúdo do LinkedIn...';
+                if (progress === 48 && detail) detail.textContent = 'Identificando alvos para automação...';
+                if (progress === 72 && detail) detail.textContent = 'Executando ações automatizadas...';
+                if (progress === 96 && detail) detail.textContent = 'Finalizando e atualizando estatísticas...';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // Executar automação real via API
+                    fetch(`/api/automation/${type}`, { method: 'POST' })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Atualizar estatísticas
+                                stats = data.stats;
+                                const counterEl = document.getElementById(actionData.counterId);
+                                if (counterEl) {
+                                    counterEl.textContent = stats[actionData.statKey];
+                                    counterEl.style.transform = 'scale(1.2)';
+                                    setTimeout(() => {
+                                        counterEl.style.transform = 'scale(1)';
+                                    }, 300);
+                                }
+                                
+                                // Mostrar conclusão
+                                if (icon) icon.textContent = '✅';
+                                if (message) message.textContent = 'Automação concluída!';
+                                if (detail) detail.textContent = `${actionData.count} ${actionData.name.toLowerCase()} executadas com sucesso!`;
+                                
+                                console.log('✅ Automação ' + type + ' concluída!', data);
+                            } else {
+                                throw new Error(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('❌ Erro na automação:', error);
+                            if (icon) icon.textContent = '❌';
+                            if (message) message.textContent = 'Erro na automação';
+                            if (detail) detail.textContent = 'Tente novamente em alguns instantes.';
+                        });
+                    
+                    // Esconder overlay após 3 segundos
+                    setTimeout(() => {
+                        if (overlay) overlay.style.display = 'none';
+                        if (progressBar) progressBar.style.width = '0%';
+                        if (progressText) progressText.textContent = '0% concluído';
+                        
+                        automationRunning = false;
+                    }, 3000);
+                }
+            }, 250);
+        }
+
+        // Carregar status inicial
+        async function loadStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                
+                if (data.linkedin_connected) {
+                    linkedinConnected = true;
+                    statusEl.innerHTML = '🟢 Conectado';
+                    statusEl.classList.add('connected');
+                    
+                    buttons.forEach(id => {
+                        const btn = document.getElementById(id);
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.style.opacity = '1';
+                        }
+                    });
+                }
+                
+                // Atualizar estatísticas
+                if (data.stats) {
+                    stats = data.stats;
+                    document.getElementById('likesCount').textContent = stats.likes;
+                    document.getElementById('connectionsCount').textContent = stats.connections;
+                    document.getElementById('commentsCount').textContent = stats.comments;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar status:', error);
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🎯 SnapLinked v2.0 Dashboard carregado!');
+            console.log('👆 Use os controles para conectar e automatizar o LinkedIn');
+            
+            // Carregar status inicial
+            loadStatus();
+            
+            // Atualizar status periodicamente
+            setInterval(loadStatus, 30000);
+        });
+    </script>
+</body>
+</html>

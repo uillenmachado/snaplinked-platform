@@ -1,0 +1,4 @@
+# SnapLinked v2.0 - Dependências Python
+Flask==2.3.3
+Flask-CORS==4.0.0
+Werkzeug==2.3.7
