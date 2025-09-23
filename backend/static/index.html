@@ -4,131 +4,285 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SnapLinked v3.0 - Automação Profissional LinkedIn</title>
-    <meta name="description" content="Plataforma completa de automação LinkedIn com funcionalidades reais e seguras">
-    <meta name="keywords" content="linkedin, automação, marketing, networking, profissional">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Plataforma completa de automação LinkedIn com funcionalidades reais e seguras. Automatize curtidas, conexões e comentários de forma profissional.">
+    <meta name="keywords" content="linkedin, automação, marketing, networking, profissional, curtidas, conexões, comentários">
     <meta name="author" content="SnapLinked">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="pt-BR">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://snaplinked.com/">
+    <meta property="og:title" content="SnapLinked v3.0 - Automação Profissional LinkedIn">
+    <meta property="og:description" content="Plataforma completa de automação LinkedIn com funcionalidades reais e seguras.">
+    <meta property="og:image" content="/static/images/og-image.png">
+    <meta property="og:site_name" content="SnapLinked">
+    <meta property="og:locale" content="pt_BR">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://snaplinked.com/">
+    <meta property="twitter:title" content="SnapLinked v3.0 - Automação Profissional LinkedIn">
+    <meta property="twitter:description" content="Plataforma completa de automação LinkedIn com funcionalidades reais e seguras.">
+    <meta property="twitter:image" content="/static/images/twitter-image.png">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/static/images/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png">
+    <link rel="manifest" href="/static/manifest.json">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0077b5">
+    <meta name="msapplication-TileColor" content="#0077b5">
     
     <!-- CSS -->
     <link rel="stylesheet" href="/static/css/main.css">
     
     <!-- Preload recursos críticos -->
     <link rel="preload" href="/static/js/main.js" as="script">
+    <link rel="preload" href="/static/css/main.css" as="style">
+    
+    <!-- DNS Prefetch para recursos externos -->
+    <link rel="dns-prefetch" href="//www.linkedin.com">
+    <link rel="dns-prefetch" href="//api.linkedin.com">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "SnapLinked",
+        "description": "Plataforma completa de automação LinkedIn com funcionalidades reais e seguras",
+        "url": "https://snaplinked.com",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "BRL"
+        }
+    }
+    </script>
 </head>
 <body>
+    <!-- Skip to main content para acessibilidade -->
+    <a href="#main-content" class="sr-only">Pular para o conteúdo principal</a>
+    
     <!-- Header -->
-    <header class="header">
+    <header class="header" role="banner">
         <div class="header-left">
-            <div class="logo">🚀 SnapLinked</div>
-            <div class="version">v3.0</div>
-            <div class="status" id="connectionStatus">
+            <div class="logo" role="img" aria-label="SnapLinked Logo">
+                🚀 SnapLinked
+            </div>
+            <div class="version" aria-label="Versão 3.0">v3.0</div>
+            <div class="status" id="connectionStatus" role="status" aria-live="polite">
                 🔴 Desconectado
             </div>
         </div>
         <div class="header-buttons">
-            <button class="btn btn-open" id="openLinkedInBtn">
-                🌐 Abrir LinkedIn
+            <button class="btn btn-open" id="openLinkedInBtn" 
+                    aria-label="Abrir LinkedIn em nova aba"
+                    title="Abrir LinkedIn (Ctrl+O)">
+                <span aria-hidden="true">🌐</span>
+                <span>Abrir LinkedIn</span>
             </button>
         </div>
     </header>
     
     <!-- Conteúdo Principal -->
-    <main class="main-content">
+    <main class="main-content" id="main-content" role="main">
         <!-- Sidebar -->
-        <aside class="sidebar">
-            <h3>Painel de Controle</h3>
+        <aside class="sidebar" role="complementary" aria-label="Painel de controle">
+            <h3>
+                <span aria-hidden="true">🎛️</span>
+                Painel de Controle
+            </h3>
             
             <!-- Loading Message (oculto por padrão) -->
-            <div id="loadingMessage" class="alert alert-info" style="display: none;">
-                <div class="loading"></div> Carregando...
+            <div id="loadingMessage" class="alert alert-info" style="display: none;" 
+                 role="status" aria-live="polite">
+                <div class="loading" aria-hidden="true"></div> 
+                <span>Carregando...</span>
             </div>
             
             <!-- Card de Autenticação -->
-            <section class="auth-card">
-                <h4>🔐 Conectar LinkedIn</h4>
-                <p>Escolha uma opção para conectar sua conta:</p>
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    <button id="oauthBtn" class="btn btn-oauth">
-                        <span>🔗</span> OAuth LinkedIn
+            <section class="auth-card" aria-labelledby="auth-heading">
+                <h4 id="auth-heading">🔐 Conectar LinkedIn</h4>
+                <p class="form-description">Escolha uma opção para conectar sua conta:</p>
+                <div class="auth-buttons">
+                    <button id="oauthBtn" class="btn btn-oauth" 
+                            aria-describedby="oauth-description"
+                            title="Autenticação segura via OAuth 2.0">
+                        <span aria-hidden="true">🔗</span> 
+                        <span>OAuth LinkedIn</span>
                     </button>
-                    <button id="manualBtn" class="btn btn-manual">
-                        <span>🖱️</span> Login Manual
+                    <div id="oauth-description" class="sr-only">
+                        Autenticação segura usando OAuth 2.0 do LinkedIn
+                    </div>
+                    
+                    <button id="manualBtn" class="btn btn-manual"
+                            aria-describedby="manual-description"
+                            title="Login manual com email">
+                        <span aria-hidden="true">🖱️</span> 
+                        <span>Login Manual</span>
                     </button>
+                    <div id="manual-description" class="sr-only">
+                        Login manual usando seu email
+                    </div>
                 </div>
             </section>
             
             <!-- Card de Estatísticas -->
-            <section class="stats-card">
-                <h4>📊 Estatísticas</h4>
+            <section class="stats-card" aria-labelledby="stats-heading">
+                <h4 id="stats-heading">📊 Estatísticas</h4>
                 <div class="stat-row">
-                    <span class="stat-label">👍 Curtidas:</span>
-                    <span id="likesCount" class="stat-value stat-likes">0</span>
+                    <span class="stat-label">
+                        <span aria-hidden="true">👍</span> Curtidas:
+                    </span>
+                    <span id="likesCount" class="stat-value stat-likes" 
+                          aria-label="Total de curtidas realizadas">0</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">🤝 Conexões:</span>
-                    <span id="connectionsCount" class="stat-value stat-connections">0</span>
+                    <span class="stat-label">
+                        <span aria-hidden="true">🤝</span> Conexões:
+                    </span>
+                    <span id="connectionsCount" class="stat-value stat-connections"
+                          aria-label="Total de conexões enviadas">0</span>
                 </div>
                 <div class="stat-row">
-                    <span class="stat-label">💬 Comentários:</span>
-                    <span id="commentsCount" class="stat-value stat-comments">0</span>
+                    <span class="stat-label">
+                        <span aria-hidden="true">💬</span> Comentários:
+                    </span>
+                    <span id="commentsCount" class="stat-value stat-comments"
+                          aria-label="Total de comentários realizados">0</span>
                 </div>
-                <div style="margin-top: 16px;">
-                    <button id="resetStatsBtn" class="btn" style="width: 100%; background: #6c757d; color: white;">
-                        🔄 Resetar Estatísticas
+                <div style="margin-top: var(--spacing-4);">
+                    <button id="resetStatsBtn" class="btn btn-secondary" 
+                            style="width: 100%;"
+                            aria-label="Resetar todas as estatísticas"
+                            title="Resetar estatísticas (Ctrl+R)">
+                        <span aria-hidden="true">🔄</span> 
+                        <span>Resetar Estatísticas</span>
                     </button>
                 </div>
             </section>
             
             <!-- Botões de Automação -->
-            <section>
-                <h4 style="margin-bottom: 16px; color: #495057;">🤖 Automações</h4>
-                <div class="automation-buttons">
-                    <button class="btn-automation btn-like" id="likeBtn" disabled>
-                        <span>👍</span>
+            <section aria-labelledby="automation-heading">
+                <h4 id="automation-heading" style="margin-bottom: var(--spacing-4); color: var(--gray-700);">
+                    <span aria-hidden="true">🤖</span> Automações
+                </h4>
+                <div class="automation-buttons" role="group" aria-label="Botões de automação">
+                    <button class="btn-automation btn-like" id="likeBtn" disabled
+                            aria-describedby="like-description"
+                            title="Curtir 3 posts automaticamente (Ctrl+L)">
+                        <span aria-hidden="true">👍</span>
                         <span>Curtir 3 Posts</span>
                     </button>
-                    <button class="btn-automation btn-connect-action" id="connectBtn" disabled>
-                        <span>🤝</span>
+                    <div id="like-description" class="sr-only">
+                        Automaticamente curte 3 posts no seu feed do LinkedIn
+                    </div>
+                    
+                    <button class="btn-automation btn-connect-action" id="connectBtn" disabled
+                            aria-describedby="connect-description"
+                            title="Enviar 2 solicitações de conexão (Ctrl+K)">
+                        <span aria-hidden="true">🤝</span>
                         <span>Enviar 2 Conexões</span>
                     </button>
-                    <button class="btn-automation btn-comment" id="commentBtn" disabled>
-                        <span>💬</span>
+                    <div id="connect-description" class="sr-only">
+                        Automaticamente envia 2 solicitações de conexão para perfis sugeridos
+                    </div>
+                    
+                    <button class="btn-automation btn-comment" id="commentBtn" disabled
+                            aria-describedby="comment-description"
+                            title="Comentar em 1 post automaticamente (Ctrl+J)">
+                        <span aria-hidden="true">💬</span>
                         <span>Comentar 1 Post</span>
                     </button>
+                    <div id="comment-description" class="sr-only">
+                        Automaticamente comenta em 1 post relevante do seu feed
+                    </div>
                 </div>
+            </section>
+            
+            <!-- Atalhos de Teclado -->
+            <section class="keyboard-shortcuts" aria-labelledby="shortcuts-heading" style="margin-top: var(--spacing-6);">
+                <details>
+                    <summary id="shortcuts-heading" style="cursor: pointer; color: var(--gray-600); font-size: var(--font-size-sm);">
+                        <span aria-hidden="true">⌨️</span> Atalhos de Teclado
+                    </summary>
+                    <div style="margin-top: var(--spacing-3); font-size: var(--font-size-xs); color: var(--gray-500);">
+                        <p><kbd>Ctrl+L</kbd> - Curtir posts</p>
+                        <p><kbd>Ctrl+K</kbd> - Enviar conexões</p>
+                        <p><kbd>Ctrl+J</kbd> - Comentar posts</p>
+                        <p><kbd>Ctrl+R</kbd> - Atualizar página</p>
+                        <p><kbd>Esc</kbd> - Fechar overlays</p>
+                    </div>
+                </details>
             </section>
         </aside>
         
         <!-- Área do Navegador -->
-        <section class="browser-area">
+        <section class="browser-area" role="region" aria-label="Área de navegação do LinkedIn">
             <!-- Barra de Navegação -->
-            <nav class="nav-bar">
-                <button class="nav-btn" id="backBtn" title="Voltar">◀️</button>
-                <button class="nav-btn" id="forwardBtn" title="Avançar">▶️</button>
-                <button class="nav-btn" id="refreshBtn" title="Atualizar">🔄</button>
-                <input class="url-bar" id="urlBar" type="text" 
-                       value="https://www.linkedin.com/feed/" readonly 
-                       aria-label="Barra de URL">
-                <button class="btn btn-open" id="goBtn">Ir</button>
+            <nav class="nav-bar" role="navigation" aria-label="Controles de navegação">
+                <button class="nav-btn" id="backBtn" 
+                        aria-label="Voltar página anterior"
+                        title="Voltar (Alt+←)">
+                    <span aria-hidden="true">◀️</span>
+                </button>
+                <button class="nav-btn" id="forwardBtn" 
+                        aria-label="Avançar para próxima página"
+                        title="Avançar (Alt+→)">
+                    <span aria-hidden="true">▶️</span>
+                </button>
+                <button class="nav-btn" id="refreshBtn" 
+                        aria-label="Atualizar página atual"
+                        title="Atualizar (F5)">
+                    <span aria-hidden="true">🔄</span>
+                </button>
+                <label for="urlBar" class="sr-only">Barra de endereço</label>
+                <input class="url-bar" id="urlBar" type="url" 
+                       value="https://www.linkedin.com/feed/" 
+                       placeholder="Digite uma URL do LinkedIn..."
+                       aria-label="Barra de endereço do LinkedIn"
+                       autocomplete="url">
+                <button class="btn btn-primary" id="goBtn"
+                        aria-label="Navegar para URL digitada"
+                        title="Ir para URL (Enter)">
+                    <span>Ir</span>
+                </button>
             </nav>
             
             <!-- Container do iFrame -->
             <div class="iframe-container">
                 <!-- Placeholder -->
-                <div class="iframe-placeholder" id="iframePlaceholder">
+                <div class="iframe-placeholder" id="iframePlaceholder" role="region" aria-label="Área de boas-vindas">
                     <h3>🔗 LinkedIn Integration</h3>
                     <p>Conecte-se ao LinkedIn para começar a usar as automações. A interface do LinkedIn aparecerá aqui após a conexão.</p>
                     <p><strong>Novidades v3.0:</strong></p>
-                    <ul style="text-align: left; margin: 16px 0;">
+                    <ul>
                         <li>✅ Automação real com Playwright</li>
                         <li>✅ Autenticação OAuth segura</li>
                         <li>✅ Persistência de dados</li>
                         <li>✅ Interface otimizada</li>
+                        <li>✅ Acessibilidade completa</li>
+                        <li>✅ Responsividade mobile</li>
                     </ul>
-                    <button class="btn btn-oauth" onclick="window.snapLinkedApp?.startOAuthLogin()">
-                        Conectar Agora
+                    <button class="btn btn-oauth" 
+                            onclick="window.snapLinkedApp?.startOAuthLogin()"
+                            aria-label="Conectar ao LinkedIn agora">
+                        <span aria-hidden="true">🚀</span>
+                        <span>Conectar Agora</span>
                     </button>
                 </div>
                 
@@ -138,20 +292,32 @@
                     class="linkedin-frame"
                     src=""
                     style="display: none;"
-                    title="LinkedIn Interface"
-                    sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation">
+                    title="Interface do LinkedIn"
+                    sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation allow-popups-to-escape-sandbox"
+                    loading="lazy">
+                    <p>Seu navegador não suporta iframes. 
+                       <a href="https://www.linkedin.com" target="_blank" rel="noopener">
+                           Abrir LinkedIn em nova aba
+                       </a>
+                    </p>
                 </iframe>
                 
                 <!-- Overlay de Automação -->
-                <div id="automationOverlay" class="automation-overlay">
+                <div id="automationOverlay" class="automation-overlay" 
+                     role="dialog" aria-modal="true" aria-labelledby="automation-title">
                     <div class="overlay-content">
-                        <div id="automationIcon" class="automation-icon">🤖</div>
-                        <div id="automationMessage" class="automation-message">Executando automação...</div>
-                        <div id="automationDetail" class="automation-detail">Processando ações no LinkedIn...</div>
-                        <div class="progress-container">
+                        <div id="automationIcon" class="automation-icon" aria-hidden="true">🤖</div>
+                        <h2 id="automation-title" class="automation-message">Executando automação...</h2>
+                        <p id="automationDetail" class="automation-detail">Processando ações no LinkedIn...</p>
+                        <div class="progress-container" role="progressbar" 
+                             aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+                             aria-labelledby="progress-text">
                             <div id="progressBar" class="progress-bar"></div>
                         </div>
                         <div id="progressText" class="progress-text">0% concluído</div>
+                        <p style="margin-top: var(--spacing-4); font-size: var(--font-size-xs); opacity: 0.8;">
+                            Pressione <kbd>Esc</kbd> para cancelar
+                        </p>
                     </div>
                 </div>
             </div>
@@ -159,17 +325,41 @@
     </main>
     
     <!-- Scripts -->
+    <script src="/static/js/modules/accessibility.js"></script>
+    <script src="/static/js/modules/advanced-features.js"></script>
     <script src="/static/js/main.js"></script>
     
-    <!-- Service Worker para cache (opcional) -->
+    <!-- Service Worker para PWA -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                // navigator.serviceWorker.register('/sw.js')
-                //     .then(registration => console.log('SW registered'))
-                //     .catch(error => console.log('SW registration failed'));
+            window.addEventListener('load', async () => {
+                try {
+                    const registration = await navigator.serviceWorker.register('/static/sw.js');
+                    console.log('✅ Service Worker registrado:', registration);
+                } catch (error) {
+                    console.log('❌ Falha no registro do Service Worker:', error);
+                }
             });
         }
+    </script>
+    
+    <!-- Analytics placeholder -->
+    <script>
+        // Google Analytics ou outra ferramenta de analytics
+        // gtag('config', 'GA_MEASUREMENT_ID');
+    </script>
+    
+    <!-- Error tracking -->
+    <script>
+        window.addEventListener('error', (event) => {
+            console.error('Global error:', event.error);
+            // Enviar erro para serviço de monitoramento
+        });
+        
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled promise rejection:', event.reason);
+            // Enviar erro para serviço de monitoramento
+        });
     </script>
 </body>
 </html>
