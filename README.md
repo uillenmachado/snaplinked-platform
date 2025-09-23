@@ -1,322 +1,283 @@
-# 🚀 SnapLinked v3.0 - Automação Profissional LinkedIn
+# 🚀 SnapLinked v3.0
 
-Uma plataforma completa de automação para LinkedIn com funcionalidades reais, segurança avançada e interface profissional.
+**Plataforma Profissional de Automação LinkedIn**
 
-## ✨ Novidades da v3.0
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](https://github.com/uillenmachado/snaplinked-platform)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://python.org)
+[![Flask](https://img.shields.io/badge/flask-3.0+-red.svg)](https://flask.palletsprojects.com)
 
-- 🤖 **Automação Real** - Implementação com Playwright para ações reais no LinkedIn
-- 🔐 **Segurança Avançada** - OAuth LinkedIn, JWT, criptografia e proteção CSRF
-- 💾 **Persistência de Dados** - Banco de dados SQLAlchemy com histórico completo
-- 🧪 **Testes Automatizados** - Cobertura completa com testes unitários e de integração
-- 🎨 **Interface Otimizada** - Frontend refatorado com separação de arquivos e UX melhorada
-- 📊 **Monitoramento** - Logs detalhados e estatísticas em tempo real
+## 📋 **Sobre o Projeto**
 
-## 🎯 Características Principais
+O SnapLinked é uma plataforma completa e profissional para automação de ações no LinkedIn, desenvolvida com tecnologias modernas e foco em segurança, performance e escalabilidade empresarial.
 
-- 🔗 **Duas Opções de Login** - OAuth oficial ou login manual
-- 👍 **Curtir Posts** - Automação inteligente de curtidas no feed
-- 🤝 **Enviar Conexões** - Solicitações automáticas de conexão
-- 💬 **Comentar Posts** - Comentários profissionais automatizados
-- 📈 **Estatísticas Detalhadas** - Acompanhamento completo de atividades
-- 🛡️ **Segurança Total** - Proteção contra vulnerabilidades conhecidas
+### ✨ **Principais Funcionalidades**
 
-## 🚀 Instalação Rápida
+- **Automação Real LinkedIn** com Playwright
+- **Autenticação OAuth 2.0** + JWT seguro
+- **Dashboard Moderno** e responsivo
+- **API RESTful** completa e documentada
+- **Persistência de Dados** com SQLAlchemy
+- **Monitoramento** e métricas em tempo real
+- **Deploy Automatizado** com Docker
 
-### Pré-requisitos
+### 🎯 **Ações Automatizadas**
+
+- ❤️ **Curtir posts** automaticamente
+- 🤝 **Enviar convites** de conexão
+- 💬 **Comentar posts** com mensagens personalizadas
+- 📊 **Estatísticas detalhadas** de performance
+- 🔄 **Histórico completo** de automações
+
+## 🛠️ **Tecnologias Utilizadas**
+
+### **Backend**
+- **Python 3.11** - Linguagem principal
+- **Flask 3.0** - Framework web moderno
+- **SQLAlchemy 2.0** - ORM avançado
+- **Playwright 1.48** - Automação web real
+- **JWT** - Autenticação segura
+- **Structlog** - Logging estruturado
+
+### **Frontend**
+- **HTML5/CSS3** - Interface moderna
+- **JavaScript ES6+** - Funcionalidades avançadas
+- **PWA** - Progressive Web App
+- **Service Worker** - Cache inteligente
+- **Responsive Design** - Compatibilidade universal
+
+### **Infraestrutura**
+- **Docker** - Containerização
+- **Nginx** - Proxy reverso e SSL
+- **SQLite/PostgreSQL** - Banco de dados
+- **OAuth 2.0** - Autenticação LinkedIn
+
+## 🚀 **Instalação Rápida**
+
+### **Pré-requisitos**
 - Python 3.8+
-- Node.js 16+ (opcional, para desenvolvimento frontend)
-- Navegador moderno
+- Docker e Docker Compose
+- Git
 
-### 1. Clonar o Repositório
+### **1. Clone o Repositório**
 ```bash
 git clone https://github.com/uillenmachado/snaplinked-platform.git
-cd snaplinked-platform/backend
+cd snaplinked-platform
 ```
 
-### 2. Configurar Ambiente Virtual
+### **2. Configuração de Ambiente**
 ```bash
+# Copiar arquivo de configuração
+cp backend/.env.example backend/.env
+
+# Editar variáveis de ambiente
+nano backend/.env
+```
+
+### **3. Deploy com Docker (Recomendado)**
+```bash
+# Deploy de desenvolvimento
+./deploy.sh
+
+# Deploy de produção
+./deploy.sh
+# Escolha opção 2 no menu
+```
+
+### **4. Instalação Manual**
+```bash
+# Criar ambiente virtual
+cd backend
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
 # ou
 venv\Scripts\activate     # Windows
-```
 
-### 3. Instalar Dependências
-```bash
+# Instalar dependências
 pip install -r requirements.txt
-```
 
-### 4. Configurar Variáveis de Ambiente
-```bash
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
-```
+# Instalar navegadores Playwright
+playwright install chromium
 
-### 5. Inicializar Banco de Dados
-```bash
+# Inicializar banco de dados
 python init_db.py init
-```
 
-### 6. Executar Aplicação
-```bash
+# Executar aplicação
 python app.py
 ```
 
-### 7. Acessar Dashboard
-Abra seu navegador em: http://localhost:5000
+## 🔧 **Configuração**
 
-## ⚙️ Configuração Avançada
-
-### Variáveis de Ambiente
-
-Crie um arquivo `.env` baseado no `.env.example`:
-
+### **Variáveis de Ambiente**
 ```env
-# Configurações Flask
-FLASK_ENV=development
-FLASK_DEBUG=true
-FLASK_HOST=127.0.0.1
-FLASK_PORT=5000
-SECRET_KEY=sua-chave-secreta-aqui
+# Configurações básicas
+SECRET_KEY=sua-chave-secreta-super-segura
+FLASK_ENV=production
+DEBUG=false
 
-# Banco de dados
-DATABASE_URL=sqlite:///snaplinked.db
-
-# LinkedIn API (OAuth)
+# LinkedIn OAuth (opcional)
 LINKEDIN_CLIENT_ID=seu-client-id
 LINKEDIN_CLIENT_SECRET=seu-client-secret
 LINKEDIN_REDIRECT_URI=http://localhost:5000/auth/linkedin/callback
 
+# Banco de dados
+DATABASE_URL=sqlite:///instance/snaplinked.db
+
 # Configurações de automação
-AUTOMATION_DELAY=2
-MAX_ACTIONS_PER_SESSION=50
+DEFAULT_DELAY_MIN=2
+DEFAULT_DELAY_MAX=5
+MAX_DAILY_ACTIONS=100
 ```
 
-### Configuração OAuth LinkedIn
-
-1. Acesse [LinkedIn Developers](https://developer.linkedin.com/)
+### **LinkedIn OAuth Setup**
+1. Acesse [LinkedIn Developers](https://www.linkedin.com/developers/)
 2. Crie uma nova aplicação
-3. Configure as URLs de redirecionamento
-4. Copie Client ID e Client Secret para o `.env`
+3. Configure redirect URI: `http://localhost:5000/auth/linkedin/callback`
+4. Copie Client ID e Client Secret para `.env`
 
-## 📁 Estrutura do Projeto
+## 📖 **Como Usar**
 
+### **1. Acesso à Plataforma**
+- Abra `http://localhost:5000` no navegador
+- Faça login com LinkedIn OAuth ou login manual
+- Acesse o dashboard principal
+
+### **2. Configurar Automações**
+- Defina limites diários de ações
+- Configure delays entre ações
+- Personalize mensagens de comentários
+
+### **3. Executar Automações**
+- Selecione o tipo de ação (curtir, conectar, comentar)
+- Defina quantidade de ações
+- Monitore progresso em tempo real
+
+### **4. Acompanhar Resultados**
+- Visualize estatísticas detalhadas
+- Analise histórico de automações
+- Monitore performance e sucesso
+
+## 📊 **API Endpoints**
+
+### **Autenticação**
+```http
+POST /api/auth/manual-login    # Login manual
+GET  /api/auth/linkedin        # OAuth LinkedIn
+POST /api/auth/logout          # Logout
 ```
-snaplinked-platform/
-├── README.md                 # Documentação principal
-├── backend/                  # Servidor Flask
-│   ├── app.py               # Aplicação principal
-│   ├── config.py            # Configurações
-│   ├── models.py            # Modelos de dados
-│   ├── init_db.py           # Inicialização do BD
-│   ├── run_tests.py         # Executor de testes
-│   ├── requirements.txt     # Dependências Python
-│   ├── .env.example         # Exemplo de configuração
-│   ├── services/            # Serviços de negócio
-│   │   └── linkedin_service.py
-│   ├── static/              # Arquivos estáticos
-│   │   ├── css/
-│   │   │   └── main.css     # Estilos principais
-│   │   ├── js/
-│   │   │   └── main.js      # JavaScript principal
-│   │   └── index.html       # Interface principal
-│   └── tests/               # Testes automatizados
-│       ├── test_models.py
-│       └── test_api.py
-└── frontend/                # Configuração React (opcional)
-    └── package.json
+
+### **Automação**
+```http
+POST /api/automation/like      # Curtir posts
+POST /api/automation/connect   # Enviar convites
+POST /api/automation/comment   # Comentar posts
+GET  /api/automation/sessions  # Histórico de sessões
+GET  /api/automation/stats     # Estatísticas
 ```
 
-## 🎮 Como Usar
+### **Sistema**
+```http
+GET /api/health               # Status da aplicação
+GET /api/status               # Status do usuário
+```
 
-### 1. Conectar ao LinkedIn
+## 🔒 **Segurança**
 
-**Opção A: OAuth (Recomendado)**
-- Clique em "OAuth LinkedIn"
-- Autorize a aplicação no LinkedIn
-- Retorne automaticamente autenticado
+### **Recursos Implementados**
+- **Autenticação JWT** com refresh tokens
+- **Rate limiting** por IP e usuário
+- **Input validation** em todas as APIs
+- **CSRF protection** automático
+- **Security headers** configurados
+- **Audit logging** estruturado
+- **Criptografia** de dados sensíveis
 
-**Opção B: Login Manual**
-- Clique em "Login Manual"
-- Insira seu email
-- Faça login no LinkedIn na janela que abrir
+### **Boas Práticas**
+- Use HTTPS em produção
+- Configure firewalls adequados
+- Monitore logs de segurança
+- Mantenha dependências atualizadas
+- Use senhas fortes para SECRET_KEY
 
-### 2. Executar Automações
+## 🐳 **Deploy em Produção**
 
-Após conectado, use os botões na sidebar:
-
-- **👍 Curtir 3 Posts** - Curte posts automaticamente no feed
-- **🤝 Enviar 2 Conexões** - Envia solicitações de conexão
-- **💬 Comentar 1 Post** - Adiciona comentários profissionais
-
-### 3. Acompanhar Estatísticas
-
-- Visualize curtidas, conexões e comentários em tempo real
-- Acesse histórico detalhado de ações
-- Reset estatísticas quando necessário
-
-## 🧪 Testes
-
-### Executar Todos os Testes
+### **Docker Compose**
 ```bash
+# Produção com Nginx e SSL
+docker-compose --profile production up -d
+```
+
+### **Configurações de Produção**
+- Configure certificados SSL válidos
+- Use banco PostgreSQL para escala
+- Configure backup automático
+- Monitore recursos do sistema
+- Configure alertas de erro
+
+## 🧪 **Testes**
+
+```bash
+# Executar todos os testes
+cd backend
 python run_tests.py
-```
 
-### Executar Teste Específico
-```bash
-python run_tests.py --test tests.test_models.TestModels.test_user_creation
-```
-
-### Listar Testes Disponíveis
-```bash
-python run_tests.py --list
-```
-
-### Cobertura de Código
-```bash
-pip install coverage
+# Testes com coverage
 python run_tests.py --coverage
+
+# Testes específicos
+python -m pytest tests/test_api.py
 ```
 
-## 🛠️ Desenvolvimento
+## 📈 **Monitoramento**
 
-### Estrutura de Desenvolvimento
+### **Métricas Disponíveis**
+- Performance de automações
+- Uso de recursos do sistema
+- Estatísticas de usuários
+- Logs de erro e debug
+- Health checks automáticos
 
-```bash
-# Instalar dependências de desenvolvimento
-pip install -r requirements.txt
+### **Dashboards**
+- `/api/health` - Status da aplicação
+- `/api/status` - Status do usuário
+- Logs estruturados com Structlog
 
-# Executar em modo de desenvolvimento
-FLASK_ENV=development python app.py
-
-# Executar testes continuamente
-python run_tests.py --watch
-
-# Verificar qualidade do código
-pylint backend/
-flake8 backend/
-bandit -r backend/
-```
-
-### Comandos Úteis
-
-```bash
-# Gerenciar banco de dados
-python init_db.py init     # Inicializar
-python init_db.py reset    # Resetar (CUIDADO!)
-python init_db.py stats    # Ver estatísticas
-
-# Executar testes
-python run_tests.py        # Todos os testes
-python run_tests.py -q     # Modo silencioso
-python run_tests.py -c     # Com cobertura
-```
-
-## 🔒 Segurança
-
-### Medidas Implementadas
-
-- ✅ **Autenticação JWT** - Tokens seguros com expiração
-- ✅ **OAuth 2.0** - Integração oficial LinkedIn
-- ✅ **Proteção CSRF** - Validação de estado OAuth
-- ✅ **Sanitização** - Validação de entrada de dados
-- ✅ **HTTPS Ready** - Configuração para produção
-- ✅ **Dependências Seguras** - Versões atualizadas
-
-### Configuração de Produção
-
-```env
-FLASK_ENV=production
-FLASK_DEBUG=false
-FLASK_HOST=0.0.0.0
-SESSION_COOKIE_SECURE=true
-```
-
-## 📊 API Endpoints
-
-### Autenticação
-- `GET /api/auth/linkedin` - Iniciar OAuth
-- `POST /api/auth/manual-login` - Login manual
-- `POST /api/auth/logout` - Logout
-
-### Automação
-- `POST /api/automation/like` - Curtir posts
-- `POST /api/automation/connect` - Enviar conexões
-- `POST /api/automation/comment` - Comentar posts
-- `GET /api/automation/sessions` - Histórico de sessões
-- `GET /api/automation/logs` - Logs detalhados
-
-### Estatísticas
-- `GET /api/status` - Status da aplicação
-- `POST /api/stats/reset` - Resetar estatísticas
-
-### Utilitários
-- `GET /api/health` - Verificação de saúde
-
-## 🚀 Deploy
-
-### Desenvolvimento Local
-```bash
-python app.py
-```
-
-### Produção com Gunicorn
-```bash
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
-```
-
-### Docker (Opcional)
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-EXPOSE 5000
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]
-```
-
-## 🤝 Contribuição
+## 🤝 **Contribuição**
 
 1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas mudanças (`git commit -am 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📝 Changelog
+## 📄 **Licença**
 
-### v3.0.0 (2025-09-23)
-- 🎉 **Lançamento da v3.0** - Reescrita completa
-- 🤖 Automação real com Playwright
-- 🔐 Sistema de autenticação OAuth + JWT
-- 💾 Persistência com SQLAlchemy
-- 🧪 Testes automatizados completos
-- 🎨 Interface otimizada e responsiva
-- 🛡️ Correção de vulnerabilidades de segurança
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-### v2.0.0 (Anterior)
-- Interface visual integrada
-- Simulação de automações
-- Dashboard básico
+## 📞 **Suporte**
 
-## 📄 Licença
+- **Issues**: [GitHub Issues](https://github.com/uillenmachado/snaplinked-platform/issues)
+- **Documentação**: [API Documentation](API.md)
+- **Instalação**: [Installation Guide](INSTALL.md)
+- **Segurança**: [Security Policy](SECURITY.md)
 
-Este projeto é privado e proprietário.
+## 🎯 **Roadmap**
 
-## 🆘 Suporte
+### **v3.1 (Próxima)**
+- [ ] Integração com mais redes sociais
+- [ ] Dashboard analytics avançado
+- [ ] API webhooks
+- [ ] Automações agendadas
 
-- 📧 Email: suporte@snaplinked.com
-- 📚 Documentação: [Wiki do Projeto](https://github.com/uillenmachado/snaplinked-platform/wiki)
-- 🐛 Issues: [GitHub Issues](https://github.com/uillenmachado/snaplinked-platform/issues)
-
-## ⚠️ Aviso Legal
-
-Este software é destinado apenas para uso educacional e profissional. Use com responsabilidade e respeite os termos de serviço do LinkedIn. Os desenvolvedores não se responsabilizam pelo uso inadequado da ferramenta.
+### **v3.2 (Futuro)**
+- [ ] Machine Learning para otimização
+- [ ] Multi-tenancy
+- [ ] Mobile app
+- [ ] Integrações CRM
 
 ---
 
-**SnapLinked v3.0** - Desenvolvido com ❤️ para profissionais que valorizam automação inteligente e segura.
+**Desenvolvido com ❤️ pela equipe SnapLinked**
 
-🌟 **Dê uma estrela no projeto se ele foi útil para você!**
+[![GitHub](https://img.shields.io/badge/GitHub-uillenmachado-black.svg)](https://github.com/uillenmachado)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue.svg)](https://linkedin.com/in/uillenmachado)
